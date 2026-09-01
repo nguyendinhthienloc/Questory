@@ -91,18 +91,20 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 - [x] Define a serializable 1080 x 1920 story document.
 - [x] Create at least three original starting templates.
 - [x] Support photo, text, route, statistic, quest-list, sticker, and location elements.
-- [ ] Support select, drag, resize, rotate, reorder, duplicate, and delete.
-- [ ] Support photo crop/focal-position editing.
-- [ ] Add alignment guides or snapping.
-- [ ] Add undo and redo.
-- [ ] Add solid palettes and a small licensed font selection.
-- [ ] Populate a story from fixture or real `RunSummary`.
-- [ ] Support route, distance, duration, pace, landmarks, quests, photos, captions, and date.
-- [ ] Add clearly labeled estimated calories when configured.
-- [ ] Add cached weather only when available.
-- [ ] Export exactly 1080 x 1920 without editor controls.
-- [ ] Invoke Android sharing.
-- [ ] Save and reopen an editable project.
+- [x] Support select, drag, resize, rotate, reorder, duplicate, and delete.
+- [x] Support photo crop/focal-position editing.
+- [x] Add alignment guides or snapping.
+- [x] Add undo and redo.
+- [x] Add solid palettes and a small licensed font selection.
+- [x] Populate a story from fixture or real `RunSummary`.
+- [x] Support route, distance, duration, pace, landmarks, quests, photos, captions, and date.
+- [x] Add clearly labeled estimated calories when configured.
+- [x] Add cached weather only when available.
+- [x] Export exactly 1080 x 1920 without editor controls.
+- [-] Invoke Android sharing. Implementation is complete; device verification is pending.
+- [x] Save and reopen an editable project.
+
+**Verification (September 1, 2026):** 18 Flutter tests pass, including a real 1080 x 1920 PNG decode, serialization/reopen coverage, editor operations, conditional recap data, export errors, and a 360 x 640 layout. Focused analysis is clean. Android build and share-sheet verification remain blocked on this host because Gradle cannot establish its required local loopback connection and no Android target is connected.
 
 **Done when:** the editor works from fixtures, export dimensions are exact, projects reopen without losing transforms/order/text, and all visual assets are original or properly licensed.
 

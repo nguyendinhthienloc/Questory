@@ -59,6 +59,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: Noto Sans
+      fonts:
+        - asset: assets/story/fonts/NotoSans-Variable.ttf
+    - family: Space Grotesk
+      fonts:
+        - asset: assets/story/fonts/SpaceGrotesk-Variable.ttf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

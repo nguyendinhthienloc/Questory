@@ -10,7 +10,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 ## Status
 
-The repository contains the inherited camera prototype plus the first Questory Story Studio foundation. Local development and CI use Flutter 3.44.8; the automated checks verify formatting, analysis, tests, and an Android debug APK.
+The repository contains the inherited camera prototype plus a fixture-driven Questory Story Studio with editable templates, serializable projects, exact-size PNG export, and an Android share adapter. Local development and CI use Flutter 3.44.8; the automated checks verify formatting, analysis, tests, and an Android debug APK.
 
 ## Team and modular ownership
 

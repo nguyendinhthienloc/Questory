@@ -38,6 +38,45 @@ void main() {
         isFalse,
       );
     });
+
+    test('round-trips photo crop and recorded route geometry', () {
+      final original = storyTemplates.first.document;
+      final photo = original.elements.firstWhere(
+        (element) => element.type == StoryElementType.photo,
+      );
+      final route = original.elements.firstWhere(
+        (element) => element.type == StoryElementType.route,
+      );
+      final edited = original
+          .replaceElement(
+            photo.copyWith(
+              assetPath: '/private/run/photo.png',
+              photoCrop: const StoryPhotoCrop(
+                focalX: 0.65,
+                focalY: -0.3,
+                zoom: 2.25,
+              ),
+            ),
+          )
+          .replaceElement(
+            route.copyWith(
+              routePoints: const [
+                StoryCanvasPoint(0, 1),
+                StoryCanvasPoint(0.5, 0.4),
+                StoryCanvasPoint(1, 0),
+              ],
+            ),
+          );
+
+      final restored = StoryDocument.fromJson(edited.toJson());
+      final restoredPhoto = restored.elementById(photo.id)!;
+      final restoredRoute = restored.elementById(route.id)!;
+
+      expect(restoredPhoto.photoCrop.zoom, 2.25);
+      expect(restoredPhoto.photoCrop.focalX, 0.65);
+      expect(restoredRoute.routePoints, hasLength(3));
+      expect(restoredRoute.routePoints.last.x, 1);
+    });
   });
 
   group('Story templates', () {

@@ -1,5 +1,7 @@
 # Questory
 
+[![CI](https://github.com/nguyendinhthienloc/Questory/actions/workflows/ci.yml/badge.svg)](https://github.com/nguyendinhthienloc/Questory/actions/workflows/ci.yml)
+
 > Run the city. Capture the story.
 
 Questory is an offline-first Android travel-running companion for casual users in Vietnam. Users follow a curated route or start a free run, record their path, complete location-based photo quests, and turn the route, statistics, places, and photos into an editable 1080 x 1920 Instagram Story infographic.
@@ -8,7 +10,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 ## Status
 
-The repository currently contains a small Flutter camera prototype that will be reorganized into Questory. It has not been build-verified on this machine because Flutter is not currently available on `PATH`.
+The repository contains the inherited camera prototype plus the first Questory Story Studio foundation. Local development and CI use Flutter 3.44.8; the automated checks verify formatting, analysis, tests, and an Android debug APK.
 
 ## Team and modular ownership
 
@@ -133,7 +135,9 @@ flutter run
 flutter build apk --release
 ```
 
-These commands still require verification after Flutter is available locally.
+GitHub Actions runs on every push and pull request to `main`, and can also be started manually from the Actions page. It uses the committed `pubspec.lock`, rejects formatting changes in `lib/features/` and `test/`, fails on analyzer errors or warnings, runs the test suite with coverage, builds a debug APK, and retains that APK as a workflow artifact for 14 days.
+
+The inherited camera screens still contain informational lint notices. CI displays those notices but does not fail on them; new feature code should remain clean.
 
 ## Agent context
 

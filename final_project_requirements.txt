@@ -1,0 +1,115 @@
+================================================================================
+FINAL PROJECT REQUIREMENTS & SPECIFICATIONS
+Course: TT2526HK3_CS426_24A - Final Project
+Submission Deadline: Saturday, September 5, 2026 at 23:59 (11:59 PM)
+Submission Form: https://forms.gle/KdcR2BaASEGx2RCeA
+================================================================================
+
+1. PROJECT OVERVIEW & APPLICATION REQUIREMENTS
+--------------------------------------------------------------------------------
+- Platform & Tech Stack:
+  * Must be a native-installable Android app.
+  * Minimum supported version: Android API 24+.
+  * Permitted stacks: Kotlin/Java with Android SDK, Jetpack Compose, Flutter, or React Native.
+- Scope & Functionality:
+  * Complete, working Android application solving a realistic problem for a clearly identified target user group.
+  * Must feature at least 3 to 4 meaningfully connected screens (beyond a single static screen).
+  * Must implement persistent local data storage.
+  * Must integrate with at least one external data source or device capability (e.g., REST API, camera, location services, push notifications).
+  * No prior topic approval required.
+
+2. GROUP FORMATION
+--------------------------------------------------------------------------------
+- Team size: 2 to 4 members per group.
+- Self-forming teams; no advance registration of members or topic required.
+- Clear division of work among all members must be defined and documented in the final report.
+
+3. DELIVERABLES & PACKAGE STRUCTURE
+--------------------------------------------------------------------------------
+Submit a single compressed ZIP file named with student IDs in ascending order, separated by underscores:
+Example: 2012345_2012350_2012361.zip
+
+Archive Structure:
+<student_ids>/
+├── README.md
+├── src/
+│   └── (Full source code, or git-log.txt)
+├── apk/
+│   └── app-release.apk
+├── report/
+│   └── report.pdf
+└── video/
+    └── demo-link.txt
+
+Details for each required item:
+- README.md:
+  * Group members (Student ID + Full Name).
+  * Project title.
+  * Demo video link.
+  * Build and run instructions.
+  * Test account credentials (if login/authentication is required).
+
+- src/ (Source Code):
+  * Full application source code.
+  * Exclude build/cache directories: 'build', 'gradle', 'node_modules', '.idea'.
+  * Include the '.git' directory so commit history is preserved; if not using Git directly in the folder, export the log to 'src/git-log.txt'.
+
+- apk/app-release.apk (Installable APK):
+  * Release or signed debug build (.apk) targeting Android API 24 or higher.
+  * Must install and run on a physical device or emulator without crashes.
+  * MANDATORY: A project without a working APK will not be graded.
+
+- report/report.pdf (Project Report):
+  * 10 to 30 pages in PDF format.
+  * Must cover:
+    1. Project topic & background
+    2. Target users & problem description
+    3. Application architecture & system design
+    4. Technologies and libraries used
+    5. Setup, configuration, and installation instructions
+    6. Work-division table among team members
+    7. Self-assessment of completed features / tasks
+
+- video/demo-link.txt (Demo Video Link):
+  * Duration: 5 to 10 minutes.
+  * Content: Introduce the topic, explain the technical approach, and provide a live feature walkthrough on a physical device or emulator.
+  * Participation: ALL group members must speak; clearly indicate who presents each section.
+  * Hosting: Upload to Google Drive or YouTube (unlisted/public).
+  * Access: Set link sharing to "Anyone with the link can view". Inaccessible links count as non-submission.
+
+4. SUBMISSION INSTRUCTIONS
+--------------------------------------------------------------------------------
+- Deadline: 23:59 on September 5, 2026.
+- Submission portal: Google Form (https://forms.gle/KdcR2BaASEGx2RCeA).
+- Only ONE representative per group submits the form.
+- Direct ZIP upload in the form. If file size exceeds limits, upload the ZIP to Google Drive, share public view access, and paste the Drive link into the form.
+- Confirmation email from Google Forms serves as proof of submission.
+
+5. GRADING CRITERIA (OUT OF 10 POINTS)
+--------------------------------------------------------------------------------
+1. Functional Completeness (30% / 3.0 pts):
+   - Installs and runs reliably on Android.
+   - All features described in the report are fully implemented.
+   - Zero critical defects (no crashes, freezes, or data loss).
+
+2. Technical Quality & Source Code (25% / 2.5 pts):
+   - Sound software architecture with clear separation of UI, business logic, and data layers.
+   - Proper application of course techniques (lifecycle handling, local storage, API integration, asynchronous execution, runtime permissions).
+   - Clean, readable, and well-organized codebase with visible commit history.
+
+3. User Interface & User Experience (20% / 2.0 pts):
+   - Intuitive, consistent, and user-friendly interface.
+   - Sensible navigation hierarchy.
+   - Responsive layout adapting to various screen dimensions.
+   - Graceful handling of states: loading, empty, error, and offline.
+
+4. Originality & Complexity (15% / 1.5 pts):
+   - Practical concept with innovative or creative elements.
+   - Technical complexity proportional to team size.
+   - Not a trivial copy of existing tutorials or open templates.
+
+5. Report, Presentation & Collaboration (10% / 1.0 pt):
+   - Comprehensive, well-structured PDF report (10-30 pages).
+   - Clear, cohesive 5-10 minute presentation/demo video with active participation from all members.
+   - Evident and balanced collaboration across the team.
+================================================================================

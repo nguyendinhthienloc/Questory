@@ -1,6 +1,6 @@
 {
-    "name": "utas",
-    "short_name": "utas",
+    "name": "Questory",
+    "short_name": "Questory",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

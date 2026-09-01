@@ -12,7 +12,7 @@ The release demo must work offline after installation and permission grant. Live
 
 The current Flutter camera prototype is baseline material, not the target architecture:
 
-- Original `utas` imports and `com.abom.utas.utas` identity remain.
+- The Questory package/application identity migration is complete; inherited camera-screen debt remains.
 - Photo history is an in-memory global list of temporary paths.
 - Permission and camera failures are not represented safely.
 - UI, business logic, and state are mixed.

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:utas/settings/global.dart';
+import 'package:questory/settings/global.dart';
 
 class ImagePreview extends StatefulWidget {
   const ImagePreview({super.key, required this.imagePath, required this.onSend});

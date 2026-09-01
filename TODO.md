@@ -88,9 +88,9 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 **Scope:** `lib/features/story_studio/`, `assets/story/`
 
-- [ ] Define a serializable 1080 x 1920 story document.
-- [ ] Create at least three original starting templates.
-- [ ] Support photo, text, route, statistic, quest-list, sticker, and location elements.
+- [x] Define a serializable 1080 x 1920 story document.
+- [x] Create at least three original starting templates.
+- [x] Support photo, text, route, statistic, quest-list, sticker, and location elements.
 - [ ] Support select, drag, resize, rotate, reorder, duplicate, and delete.
 - [ ] Support photo crop/focal-position editing.
 - [ ] Add alignment guides or snapping.

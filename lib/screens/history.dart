@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:utas/settings/global.dart';
-import 'package:utas/settings/sizes.dart';
+import 'package:questory/settings/global.dart';
+import 'package:questory/settings/sizes.dart';
 
 
 class HistoryScreen extends StatefulWidget {

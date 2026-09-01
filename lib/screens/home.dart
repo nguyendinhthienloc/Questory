@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:utas/screens/history.dart';
-import 'package:utas/screens/preview.dart';
-import 'package:utas/settings/sizes.dart';
+import 'package:questory/screens/history.dart';
+import 'package:questory/screens/preview.dart';
+import 'package:questory/settings/sizes.dart';
 
 
 class HomeScreen extends StatefulWidget {

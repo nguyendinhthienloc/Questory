@@ -104,7 +104,7 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 - [-] Invoke Android sharing. Implementation is complete; device verification is pending.
 - [x] Save and reopen an editable project.
 
-**Verification (September 1, 2026):** 18 Flutter tests pass, including a real 1080 x 1920 PNG decode, serialization/reopen coverage, editor operations, conditional recap data, export errors, and a 360 x 640 layout. Focused analysis is clean. Android build and share-sheet verification remain blocked on this host because Gradle cannot establish its required local loopback connection and no Android target is connected.
+**Verification (September 1, 2026):** 21 Flutter tests pass, including connected Explore/Run recap/Studio navigation, an app-scoped mock repository, a real 1080 x 1920 PNG decode, serialization/reopen coverage, editor operations, conditional recap data, export errors, and 360 x 640 layouts. Focused analysis is clean and the Edge/web build succeeds with browser PNG download. Android build and share-sheet verification remain blocked on this host because Gradle cannot establish its required local loopback connection and no Android target is connected.
 
 **Done when:** the editor works from fixtures, export dimensions are exact, projects reopen without losing transforms/order/text, and all visual assets are original or properly licensed.
 

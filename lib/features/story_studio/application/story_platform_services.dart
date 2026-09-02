@@ -1,13 +1,13 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 
 import '../../../core/contracts/share_service.dart';
 import '../../../core/contracts/story_renderer.dart';
 import '../../../core/domain/story_project.dart';
+import 'story_export_storage.dart';
+import 'story_share_platform.dart';
 
 class BoundaryStoryRenderer implements StoryRenderer {
   BoundaryStoryRenderer({required this.boundaryKey});
@@ -34,22 +34,13 @@ class BoundaryStoryRenderer implements StoryRenderer {
       if (byteData == null) {
         throw StateError('Flutter could not encode the story as PNG.');
       }
-      final exportDirectory = Directory(
-        '${Directory.systemTemp.path}${Platform.pathSeparator}'
-        'questory_exports',
-      );
-      await exportDirectory.create(recursive: true);
       final safeId = document.id.replaceAll(RegExp('[^a-zA-Z0-9_-]'), '-');
-      final file = File(
-        '${exportDirectory.path}${Platform.pathSeparator}'
+      final path = await storeStoryPng(
+        byteData.buffer.asUint8List(),
         'questory-$safeId.png',
       );
-      await file.writeAsBytes(
-        byteData.buffer.asUint8List(),
-        flush: true,
-      );
       return StoryExport(
-        path: file.path,
+        path: path,
         width: image.width,
         height: image.height,
       );
@@ -62,18 +53,8 @@ class BoundaryStoryRenderer implements StoryRenderer {
 class AndroidShareService implements ShareService {
   const AndroidShareService();
 
-  static const MethodChannel _channel = MethodChannel('questory/story_share');
-
   @override
   Future<void> sharePng({required String path, required String title}) async {
-    if (!Platform.isAndroid) {
-      throw UnsupportedError(
-        'Story sharing is currently available on Android.',
-      );
-    }
-    await _channel.invokeMethod<void>('sharePng', {
-      'path': path,
-      'title': title,
-    });
+    await shareStoryPng(path: path, title: title);
   }
 }

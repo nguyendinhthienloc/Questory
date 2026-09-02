@@ -10,7 +10,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 ## Status
 
-The repository contains the inherited camera prototype plus a fixture-driven Questory Story Studio with editable templates, serializable projects, exact-size PNG export, and an Android share adapter. Local development and CI use Flutter 3.44.8; the automated checks verify formatting, analysis, tests, and an Android debug APK.
+The app now launches a fixture-driven Questory demo flow instead of the inherited camera UI. Explore, Run recap, Studio, and Runs connect a completed offline run to the real Story Studio with editable templates, a session-scoped mock repository, exact-size PNG export, Edge download, and Android sharing. Local development and CI use Flutter 3.44.8.
 
 ## Team and modular ownership
 
@@ -127,11 +127,16 @@ Technology direction: Flutter/Dart, Android API 24+, SQLite-based local persiste
 
 Prerequisites are Flutter, Android SDK, and an API 24+ device or emulator.
 
+Story Studio contributors can test the module independently with the
+[Story Studio testing guide](docs/STORY_STUDIO_TESTING.md).
+The connected demo journey is drawn in [USER_FLOW.md](docs/USER_FLOW.md).
+
 ```shell
 flutter pub get
 flutter analyze
 flutter test
 flutter run
+flutter run -d edge
 flutter build apk --release
 ```
 

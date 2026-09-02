@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/contracts/share_service.dart';
@@ -130,7 +131,11 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
         path: export.path,
         title: _editor.document.title,
       );
-      _setStatus('Export ready: 1080 x 1920 PNG. Android share sheet opened.');
+      _setStatus(
+        kIsWeb
+            ? 'Export ready: 1080 x 1920 PNG downloaded.'
+            : 'Export ready: 1080 x 1920 PNG. Android share sheet opened.',
+      );
     } catch (error) {
       _setStatus('Export failed: $error');
     } finally {

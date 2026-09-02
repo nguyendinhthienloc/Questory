@@ -1,17 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:questory/core/domain/run_summary.dart';
+import 'package:questory/core/domain/run_models.dart';
 import 'package:questory/core/domain/story_project.dart';
-import 'package:questory/features/story_studio/application/story_populator.dart';
-import 'package:questory/features/story_studio/data/story_run_fixture.dart';
+import 'package:questory/features/story_studio/application/story_builder.dart';
+import 'package:questory/features/story_studio/data/sample_run.dart';
 import 'package:questory/features/story_studio/data/story_templates.dart';
 
 void main() {
-  const populator = StoryPopulator();
+  const builder = StoryBuilder();
 
   test('populates every recap data category from a RunSummary', () {
-    final document = populator.fromRun(
+    final document = builder.fromRun(
       template: storyTemplates.first,
-      summary: storyRunFixture,
+      summary: sampleRunSummary,
       documentId: 'populated-story',
     );
     final content =
@@ -23,7 +23,7 @@ void main() {
       (element) => element.type == StoryElementType.photo,
     );
 
-    expect(document.sourceRunId, storyRunFixture.id);
+    expect(document.sourceRunId, sampleRunSummary.id);
     expect(content, contains('NHA TRANG, VIETNAM'));
     expect(content, contains('5.42 KM'));
     expect(content, contains('31:09'));
@@ -35,7 +35,7 @@ void main() {
     expect(content, contains('CACHED 27°C • CLEAR'));
     expect(content, contains('SEP'));
     expect(photo.assetPath, startsWith('fixture://'));
-    expect(route.routePoints, hasLength(storyRunFixture.track.length));
+    expect(route.routePoints, hasLength(sampleRunSummary.track.length));
     expect(
       route.routePoints.every(
         (point) => point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1,
@@ -56,7 +56,7 @@ void main() {
       quests: const [],
       evidence: const [],
     );
-    final document = populator.fromRun(
+    final document = builder.fromRun(
       template: storyTemplates.last,
       summary: summary,
       documentId: 'minimal-story',

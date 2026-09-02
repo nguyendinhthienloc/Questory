@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/contracts/story_repository.dart';
-import '../../core/domain/run_summary.dart';
+import '../../core/domain/run_models.dart';
 import '../../features/story_studio/story_studio.dart';
 import 'screens/explore_demo_screen.dart';
 import 'screens/run_recap_screen.dart';
@@ -26,7 +26,7 @@ class _QuestoryDemoShellState extends State<QuestoryDemoShell> {
   var _selectedIndex = 0;
   var _studioRevision = 0;
 
-  RunSummary get _summary => widget.summary ?? storyRunFixture;
+  RunSummary get _summary => widget.summary ?? sampleRunSummary;
 
   Future<void> _openStudio() async {
     await Navigator.of(context).push<void>(

@@ -1,9 +1,9 @@
-import '../../../core/domain/run_summary.dart';
+import '../../../core/domain/run_models.dart';
 import '../../../core/domain/story_project.dart';
 import '../data/story_templates.dart';
 
-class StoryPopulator {
-  const StoryPopulator();
+class StoryBuilder {
+  const StoryBuilder();
 
   StoryDocument fromRun({
     required StoryTemplate template,

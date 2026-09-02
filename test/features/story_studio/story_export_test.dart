@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:questory/core/contracts/story_renderer.dart';
-import 'package:questory/features/story_studio/application/story_platform_services.dart';
+import 'package:questory/features/story_studio/application/story_export_services.dart';
 import 'package:questory/features/story_studio/data/story_templates.dart';
 import 'package:questory/features/story_studio/presentation/story_canvas.dart';
 

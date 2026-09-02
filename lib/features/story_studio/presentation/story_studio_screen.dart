@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import '../../../core/contracts/share_service.dart';
 import '../../../core/contracts/story_renderer.dart';
 import '../../../core/contracts/story_repository.dart';
-import '../../../core/domain/run_summary.dart';
+import '../../../core/domain/run_models.dart';
 import '../../../core/domain/story_project.dart';
 import '../../../core/fixtures/fake_story_services.dart';
 import '../application/story_editor_controller.dart';
-import '../application/story_platform_services.dart';
-import '../application/story_populator.dart';
-import '../data/story_run_fixture.dart';
+import '../application/story_builder.dart';
+import '../application/story_export_services.dart';
+import '../data/sample_run.dart';
 import '../data/story_templates.dart';
 import 'story_canvas.dart';
 
@@ -23,12 +23,14 @@ class StoryStudioScreen extends StatefulWidget {
     this.repository,
     this.renderer,
     this.shareService,
+    this.initialDocument,
   });
 
   final RunSummary? runSummary;
   final StoryRepository? repository;
   final StoryRenderer? renderer;
   final ShareService? shareService;
+  final StoryDocument? initialDocument;
 
   @override
   State<StoryStudioScreen> createState() => _StoryStudioScreenState();
@@ -36,7 +38,7 @@ class StoryStudioScreen extends StatefulWidget {
 
 class _StoryStudioScreenState extends State<StoryStudioScreen> {
   final GlobalKey _exportBoundaryKey = GlobalKey();
-  final StoryPopulator _populator = const StoryPopulator();
+  final StoryBuilder _storyBuilder = const StoryBuilder();
   late final RunSummary _summary;
   late final StoryRepository _repository;
   late final ShareService _shareService;
@@ -49,14 +51,15 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
   @override
   void initState() {
     super.initState();
-    _summary = widget.runSummary ?? storyRunFixture;
+    _summary = widget.runSummary ?? sampleRunSummary;
     _repository = widget.repository ?? FakeStoryRepository();
     _shareService = widget.shareService ?? const AndroidShareService();
     _renderer = widget.renderer ??
         BoundaryStoryRenderer(boundaryKey: _exportBoundaryKey);
     _template = storyTemplates.first;
-    _editor = StoryEditorController(_documentFor(_template))
-      ..addListener(_refresh);
+    _editor = StoryEditorController(
+      widget.initialDocument ?? _documentFor(_template),
+    )..addListener(_refresh);
   }
 
   @override
@@ -74,10 +77,11 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
   }
 
   StoryDocument _documentFor(StoryTemplate template) {
-    return _populator.fromRun(
+    final prefix = widget.runSummary == null ? 'draft' : 'story-${_summary.id}';
+    return _storyBuilder.fromRun(
       template: template,
       summary: _summary,
-      documentId: 'draft-${template.id}',
+      documentId: '$prefix-${template.id}',
     );
   }
 

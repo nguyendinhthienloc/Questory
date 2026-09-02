@@ -7,6 +7,16 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    # The inherited camera-clone screens are retained only for provenance.
+    # Questory's active camera flow lives in features/quest_camera.
+    - lib/screens/**
+    - lib/settings/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

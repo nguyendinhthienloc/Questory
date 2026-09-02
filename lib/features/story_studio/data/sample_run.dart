@@ -1,6 +1,6 @@
-import '../../../core/domain/run_summary.dart';
+import '../../../core/domain/run_models.dart';
 
-final RunSummary storyRunFixture = RunSummary(
+final RunSummary sampleRunSummary = RunSummary(
   id: 'run-nha-trang-coast-001',
   startedAtUtc: DateTime.utc(2026, 9, 1, 23, 15),
   activeDuration: const Duration(minutes: 31, seconds: 9),

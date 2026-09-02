@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://questory.local/schemas/destination-pack-v1.json",
+  "title": "Questory destination pack",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "packVersion",
+    "id",
+    "cityName",
+    "countryCode",
+    "description",
+    "lastReviewedAtUtc",
+    "routes",
+    "quests",
+    "pointsOfInterest"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "packVersion": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "cityName": { "type": "string", "minLength": 1 },
+    "countryCode": { "const": "VN" },
+    "description": { "type": "string", "minLength": 1 },
+    "lastReviewedAtUtc": { "type": "string", "format": "date-time" },
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/route" }
+    },
+    "quests": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/quest" }
+    },
+    "pointsOfInterest": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pointOfInterest" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "geoPoint": {
+      "type": "object",
+      "required": ["latitude", "longitude", "timestampUtc"],
+      "properties": {
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "timestampUtc": { "type": "string", "format": "date-time" },
+        "accuracyMeters": { "type": "number", "minimum": 0 },
+        "altitudeMeters": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "landmark": {
+      "type": "object",
+      "required": ["id", "name", "description", "point"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "point": { "$ref": "#/$defs/geoPoint" }
+      },
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "distanceMeters",
+        "estimatedDurationSeconds",
+        "difficulty",
+        "expectedPolyline",
+        "landmarks",
+        "questIds",
+        "safetyNotes"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "distanceMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "estimatedDurationSeconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "difficulty": { "type": "string", "minLength": 1 },
+        "expectedPolyline": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/geoPoint" }
+        },
+        "landmarks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/landmark" }
+        },
+        "questIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "safetyNotes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "fallback": {
+      "type": "object",
+      "required": [
+        "type",
+        "instructions",
+        "allowedWhenAccuracyExceedsMeters"
+      ],
+      "properties": {
+        "type": { "enum": ["manualConfirmation", "skip"] },
+        "instructions": { "type": "string", "minLength": 1 },
+        "allowedWhenAccuracyExceedsMeters": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "quest": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "prompt",
+        "point",
+        "radiusMeters",
+        "captionRequired",
+        "fallback"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "point": { "$ref": "#/$defs/geoPoint" },
+        "radiusMeters": { "type": "number", "exclusiveMinimum": 0 },
+        "captionRequired": { "type": "boolean" },
+        "fallback": { "$ref": "#/$defs/fallback" },
+        "landmarkId": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "pointOfInterest": {
+      "type": "object",
+      "required": ["id", "name", "description", "point", "questIds"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "point": { "$ref": "#/$defs/geoPoint" },
+        "questIds": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

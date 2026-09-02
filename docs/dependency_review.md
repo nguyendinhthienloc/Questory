@@ -12,6 +12,7 @@ resolved graph.
 | `geolocator` | 14.0.3 | Foreground GPS points and permission state | MIT | Device only |
 | `path_provider` | 2.1.6 | App-controlled photo/export locations | BSD 3-Clause | Local only |
 | `sqflite` | 2.4.2+1 | Runs, checkpoints, stories, achievements | BSD 2-Clause | Local only |
+| `sqflite_common_ffi` (dev) | 2.4.2+1 | File-backed SQLite repository tests on desktop/CI | BSD 2-Clause | Test only |
 | `cupertino_icons` | 1.0.9 | Flutter icons | MIT | Bundled |
 
 The Android app explicitly sets minimum SDK 24. A release APK compiled and ran

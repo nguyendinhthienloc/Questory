@@ -135,8 +135,10 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 **Verification (September 2, 2026):** Module D now covers History empty,
 populated, retry/error, delete-confirmation, related-story cascade, retained
 photo cleanup, missing-media fallback, achievement boundaries, and active-run
-resume/discard recovery. All 50 project tests pass, `flutter analyze` reports no
-issues, formatting is clean, and the debug APK builds successfully. Android
+resume/discard recovery. File-backed SQLite tests also verify database restart
+and deletion isolation for runs, GPS points, evidence, stories, and
+achievements. All 53 project tests pass, `flutter analyze` reports no issues,
+formatting is clean, and the debug APK builds successfully. Android
 airplane-mode, clean API 24 installation, and final release signing remain
 separate release checks.
 

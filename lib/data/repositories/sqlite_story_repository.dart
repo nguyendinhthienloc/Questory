@@ -12,6 +12,25 @@ class SqliteStoryRepository implements StoryRepository {
   final QuestoryDatabase _database;
 
   @override
+  Future<void> deleteForRun(String runId) async {
+    await _database.database.transaction((transaction) async {
+      final rows = await transaction.query('story_project');
+      final ids = <String>[];
+      for (final row in rows) {
+        final document = _decode(row['json']! as String);
+        if (document.sourceRunId == runId) ids.add(document.id);
+      }
+      for (final id in ids) {
+        await transaction.delete(
+          'story_project',
+          where: 'id = ?',
+          whereArgs: [id],
+        );
+      }
+    });
+  }
+
+  @override
   Future<void> save(StoryDocument document) async {
     await _database.database.insert(
       'story_project',

@@ -48,7 +48,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       builder: (context) => AlertDialog(
         title: const Text('Delete this run?'),
         content: const Text(
-          'The saved route and its retained quest photos will be removed.',
+          'The saved route, its retained quest photos, and story projects '
+          'created from this run will be removed.',
         ),
         actions: [
           TextButton(
@@ -63,11 +64,45 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
     );
     if (confirmed != true) return;
-    for (final evidence in run.evidence) {
-      await widget.dependencies.photoStore.delete(evidence.photoPath);
+    final relatedStories = (await widget.dependencies.stories.list())
+        .where((story) => story.sourceRunId == run.id)
+        .toList();
+    try {
+      await widget.dependencies.stories.deleteForRun(run.id);
+      try {
+        await widget.dependencies.runs.deleteSummary(run.id);
+      } catch (_) {
+        for (final story in relatedStories) {
+          await widget.dependencies.stories.save(story);
+        }
+        rethrow;
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('The run could not be deleted: $error')),
+        );
+      }
+      return;
     }
-    await widget.dependencies.runs.deleteSummary(run.id);
-    if (mounted) _refresh();
+
+    var missingCleanup = false;
+    for (final evidence in run.evidence) {
+      try {
+        await widget.dependencies.photoStore.delete(evidence.photoPath);
+      } catch (_) {
+        missingCleanup = true;
+      }
+    }
+    if (mounted) {
+      _refresh();
+      final message = missingCleanup
+          ? 'Run deleted. Some retained photos could not be removed.'
+          : 'Run and related stories deleted.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
   }
 
   Future<void> _openStory(StoryDocument story) async {

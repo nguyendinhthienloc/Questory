@@ -112,6 +112,11 @@ Initial interfaces:
 - `Clock`
 - Optional `LiveShareService`, `WeatherService`, `CanvaHandoffService`
 
+`StoryRepository.deleteForRun` is the shared cascade operation for removing
+editable projects derived from a deleted run. History deletion removes related
+stories before the run, restores them if run deletion fails, and cleans retained
+photos only after repository records are consistent.
+
 Every interface needs a deterministic fake. A feature owner must not wait for a database, device, backend, or other screen.
 
 When a contract changes:

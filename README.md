@@ -12,7 +12,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 The complete offline MVP is now connected: Explore, two bundled city packs, route details, free-run discovery, foreground GPS tracking, location-aware photo quests, retained photos, SQLite history, achievements, Run Summary, Story Studio, exact-size PNG export, and Android sharing. The inherited camera prototype remains only as unused baseline source; app startup now opens Questory's Explore screen.
 
-Local verification on 2 September 2026 used Flutter 3.47.2 and Dart 3.13.2. All 38 combined tests passed and `flutter analyze` reported no issues. Debug and release APKs built successfully; the release APK installed and launched on Android devices. Smoke testing covered Explore, both city cards, Route Details, Free Run discovery, Run Tracker, permission recovery, camera capture with captions, PNG export, and the Android share sheet. A real foreground GPS session, airplane mode, and an API 24 target still require hands-on verification before release claims.
+Local verification on 2 September 2026 used Flutter 3.47.2 and Dart 3.13.2. All 50 combined tests passed and `flutter analyze` reported no issues. Debug and release APKs built successfully; the release APK installed and launched on Android devices. Smoke testing covered Explore, both city cards, Route Details, Free Run discovery, Run Tracker, permission recovery, camera capture with captions, PNG export, and the Android share sheet. A real foreground GPS session, airplane mode, and an API 24 target still require hands-on verification before release claims.
 
 ## Team and modular ownership
 

@@ -13,6 +13,11 @@ class FakeStoryRepository implements StoryRepository {
   final Map<String, StoryDocument> _documents;
 
   @override
+  Future<void> deleteForRun(String runId) async {
+    _documents.removeWhere((_, document) => document.sourceRunId == runId);
+  }
+
+  @override
   Future<StoryDocument?> load(String documentId) async {
     final document = _documents[documentId];
     return document == null ? null : StoryDocument.fromJson(document.toJson());

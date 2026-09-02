@@ -34,7 +34,22 @@ class AppPhotoStore implements PhotoStore {
 
   @override
   Future<void> delete(String path) async {
-    final file = File(path);
+    final support = await getApplicationSupportDirectory();
+    final photoDirectory = Directory(
+      '${support.path}${Platform.pathSeparator}questory_photos',
+    ).absolute.uri.normalizePath().toFilePath();
+    final candidate = File(path).absolute.uri.normalizePath().toFilePath();
+    final allowedPrefix = photoDirectory.endsWith(Platform.pathSeparator)
+        ? photoDirectory
+        : '$photoDirectory${Platform.pathSeparator}';
+    if (!candidate.startsWith(allowedPrefix)) {
+      throw ArgumentError.value(
+        path,
+        'path',
+        'Only retained Questory photos can be deleted.',
+      );
+    }
+    final file = File(candidate);
     if (await file.exists()) await file.delete();
   }
 }

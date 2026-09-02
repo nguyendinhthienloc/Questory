@@ -35,16 +35,48 @@ class _MainNavigationState extends State<MainNavigation> {
   Future<void> _offerRecovery() async {
     if (_recoveryChecked) return;
     _recoveryChecked = true;
-    final session = await widget.dependencies.runs.loadActive();
+    RunSession? session;
+    try {
+      session = await widget.dependencies.runs.loadActive();
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Saved-run recovery is unavailable: $error')),
+        );
+      }
+      return;
+    }
     if (session == null || !mounted) return;
-    final pack = await widget.dependencies.destinations.getPack(session.cityId);
+    final recoveredSession = session;
+    DestinationPack? pack;
+    try {
+      pack = await widget.dependencies.destinations.getPack(
+        recoveredSession.cityId,
+      );
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('The saved route could not be loaded: $error')),
+        );
+      }
+      return;
+    }
     if (pack == null || !mounted) {
-      await widget.dependencies.runs.clearActive();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'The saved route is unavailable. The checkpoint was kept.',
+            ),
+          ),
+        );
+      }
       return;
     }
     RoutePlan? route;
     for (final candidate in pack.routes) {
-      if (candidate.id == session.routeId) route = candidate;
+      if (candidate.id == recoveredSession.routeId) route = candidate;
     }
     final resume = await showDialog<bool>(
       context: context,
@@ -52,7 +84,8 @@ class _MainNavigationState extends State<MainNavigation> {
       builder: (context) => AlertDialog(
         title: const Text('Paused run found'),
         content: Text(
-          'Questory saved your ${session.locationName} run. Resume from its '
+          'Questory saved your ${recoveredSession.locationName} run. '
+          'Resume from its '
           'last checkpoint or discard it?',
         ),
         actions: [
@@ -68,9 +101,18 @@ class _MainNavigationState extends State<MainNavigation> {
       ),
     );
     if (resume == true && mounted) {
-      _openTracker(pack: pack, route: route, initialSession: session);
+      _openTracker(pack: pack, route: route, initialSession: recoveredSession);
     } else {
-      await widget.dependencies.runs.clearActive();
+      try {
+        await widget.dependencies.runs.clearActive();
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('The saved run could not be discarded: $error')),
+          );
+        }
+      }
     }
   }
 
@@ -113,28 +155,41 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   Future<void> _finishRun(RunSummary summary) async {
-    final runs = await widget.dependencies.runs.listSummaries();
-    final previous = await widget.dependencies.achievements.list();
-    final evaluated = const AchievementChecker().evaluate(
-      runs: runs,
-      nowUtc: widget.dependencies.clock.nowUtc(),
-    );
-    final previousById = {for (final item in previous) item.id: item};
-    final achievements = [
-      for (final item in evaluated)
-        if (previousById[item.id]?.unlockedAtUtc case final unlockedAt?)
-          Achievement(
-            id: item.id,
-            title: item.title,
-            description: item.description,
-            progress: item.progress,
-            target: item.target,
-            unlockedAtUtc: unlockedAt,
-          )
-        else
-          item,
-    ];
-    await widget.dependencies.achievements.saveAll(achievements);
+    var achievements = <Achievement>[];
+    try {
+      final runs = await widget.dependencies.runs.listSummaries();
+      final previous = await widget.dependencies.achievements.list();
+      final evaluated = const AchievementChecker().evaluate(
+        runs: runs,
+        nowUtc: widget.dependencies.clock.nowUtc(),
+      );
+      final previousById = {for (final item in previous) item.id: item};
+      achievements = [
+        for (final item in evaluated)
+          if (previousById[item.id]?.unlockedAtUtc case final unlockedAt?)
+            Achievement(
+              id: item.id,
+              title: item.title,
+              description: item.description,
+              progress: item.progress,
+              target: item.target,
+              unlockedAtUtc: unlockedAt,
+            )
+          else
+            item,
+      ];
+      await widget.dependencies.achievements.saveAll(achievements);
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'The run was saved, but achievements could not be updated: $error',
+            ),
+          ),
+        );
+      }
+    }
     if (!mounted) return;
     setState(() => _historyRevision++);
     Navigator.pushReplacement<void, void>(

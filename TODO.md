@@ -132,6 +132,14 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 - [x] Add a storage migration/version strategy.
 - [ ] Prepare and verify release configuration.
 
+**Verification (September 2, 2026):** Module D now covers History empty,
+populated, retry/error, delete-confirmation, related-story cascade, retained
+photo cleanup, missing-media fallback, achievement boundaries, and active-run
+resume/discard recovery. All 50 project tests pass, `flutter analyze` reports no
+issues, formatting is clean, and the debug APK builds successfully. Android
+airplane-mode, clean API 24 installation, and final release signing remain
+separate release checks.
+
 **Done when:** data survives restart, temporary image paths are not retained, deletion cannot damage unrelated records, real repositories replace fakes without feature rewrites, and the APK installs on API 24+.
 
 **Report/video:** persistence, tests, collaboration, setup, self-assessment, History/achievement demonstration.

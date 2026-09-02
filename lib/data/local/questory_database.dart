@@ -3,13 +3,15 @@ import 'package:sqflite/sqflite.dart';
 class QuestoryDatabase {
   QuestoryDatabase._(this.database);
 
+  static const schemaVersion = 1;
+
   final Database database;
 
   static Future<QuestoryDatabase> open() async {
     final base = await getDatabasesPath();
     final database = await openDatabase(
       '$base/questory.db',
-      version: 1,
+      version: schemaVersion,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
       },
@@ -42,7 +44,18 @@ class QuestoryDatabase {
           )
         ''');
       },
+      onUpgrade: _upgrade,
     );
     return QuestoryDatabase._(database);
+  }
+
+  static Future<void> _upgrade(
+    Database database,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    throw StateError(
+      'Missing Questory database migration from v$oldVersion to v$newVersion.',
+    );
   }
 }

@@ -6,4 +6,7 @@ abstract interface class StoryRepository {
   Future<StoryDocument?> load(String documentId);
 
   Future<List<StoryDocument>> list();
+
+  /// Removes every editable project derived from [runId].
+  Future<void> deleteForRun(String runId);
 }

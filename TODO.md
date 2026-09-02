@@ -23,16 +23,16 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 ## Day zero - whole team
 
 - [ ] Confirm the four module assignments.
-- [ ] Make Flutter available and record `flutter --version`.
-- [ ] Run the baseline and record known failures.
-- [ ] Set Android minimum SDK to API 24.
-- [ ] Rename the Dart package, Android namespace/application ID, and app label.
-- [ ] Create the feature-first skeleton in `AGENTS.md`.
-- [ ] Agree on immutable models: destination, route, quest, point, run, evidence, story, achievement.
-- [ ] Freeze repository/device interfaces for the first development pass.
-- [ ] Add deterministic city, run, and story fixtures.
-- [ ] Add the solid-color app theme.
-- [ ] Verify that every feature can run with fake repositories.
+- [x] Make Flutter available and record `flutter --version`.
+- [x] Run the baseline and record known failures.
+- [x] Set Android minimum SDK to API 24.
+- [x] Rename the Dart package, Android namespace/application ID, and app label.
+- [x] Create the feature-first skeleton in `AGENTS.md`.
+- [x] Agree on immutable models: destination, route, quest, point, run, evidence, story, achievement.
+- [x] Freeze repository/device interfaces for the first development pass.
+- [x] Add deterministic city, run, and story fixtures.
+- [x] Add the solid-color app theme.
+- [x] Verify that every feature can run with fake repositories.
 
 ## A - destinations and quests
 
@@ -40,17 +40,17 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 **Scope:** `lib/features/destinations/`, `assets/destinations/`
 
-- [ ] Define a versioned destination-pack JSON schema.
-- [ ] Build one Nha Trang and one Ho Chi Minh City pack.
-- [ ] Include at least one safe, plausible route per city.
-- [ ] Mix popular and lesser-known photo quests.
-- [ ] Give each quest a prompt, coordinates, radius, caption requirement, and GPS fallback.
-- [ ] Build Explore Vietnam using fixtures/repository contracts.
-- [ ] Build Route Details with landmarks, distance, duration, quests, and offline status.
-- [ ] Build free-run discovery from bundled points of interest.
-- [ ] Show completed, skipped, inaccurate-GPS, and empty states.
-- [ ] Test proximity logic with injected coordinates.
-- [ ] Review route text and public pedestrian access.
+- [x] Define a versioned destination-pack JSON schema.
+- [x] Build one Nha Trang and one Ho Chi Minh City pack.
+- [x] Include at least one safe, plausible route per city.
+- [x] Mix popular and lesser-known photo quests.
+- [x] Give each quest a prompt, coordinates, radius, caption requirement, and GPS fallback.
+- [x] Build Explore Vietnam using fixtures/repository contracts.
+- [x] Build Route Details with landmarks, distance, duration, quests, and offline status.
+- [x] Build free-run discovery from bundled points of interest.
+- [x] Show completed, skipped, inaccurate-GPS, and empty states.
+- [x] Test proximity logic with injected coordinates.
+- [x] Review route text and public pedestrian access.
 
 **Done when:** both cities and their details work in airplane mode, quest logic is testable without real GPS, and small-screen layouts do not overflow.
 
@@ -62,19 +62,19 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 **Scope:** `lib/features/tracking/`, location platform adapter
 
-- [ ] Implement idle, acquiring, active, paused, finishing, completed, and failed states.
-- [ ] Request location permission with an in-context explanation.
-- [ ] Handle approximate/denied/permanently denied permission and disabled GPS.
-- [ ] Record timestamped points during an active run.
-- [ ] Filter clearly invalid GPS jumps and document the rule.
-- [ ] Calculate active duration, distance, and average pace.
-- [ ] Checkpoint active state through the persistence contract.
-- [ ] Implement pause, resume, finish, and discard confirmation.
-- [ ] Render the recorded polyline on an offline tracker surface.
-- [ ] Expose nearby bundled quest progress.
+- [x] Implement idle, acquiring, active, paused, finishing, completed, and failed states.
+- [x] Request location permission with an in-context explanation.
+- [x] Handle approximate/denied/permanently denied permission and disabled GPS.
+- [x] Record timestamped points during an active run.
+- [x] Filter clearly invalid GPS jumps and document the rule.
+- [x] Calculate active duration, distance, and average pace.
+- [x] Checkpoint active state through the persistence contract.
+- [x] Implement pause, resume, finish, and discard confirmation.
+- [x] Render the recorded polyline on an offline tracker surface.
+- [x] Expose nearby bundled quest progress.
 - [ ] Implement/verify Android foreground tracking behavior.
-- [ ] Test calculations with a prerecorded point fixture.
-- [ ] Verify temporary GPS loss does not crash or silently finish a run.
+- [x] Test calculations with a prerecorded point fixture.
+- [x] Verify temporary GPS loss does not crash or silently finish a run.
 
 **Done when:** a deterministic fixture test passes, paused time is excluded, interruption preserves a checkpoint, and a demo run can finish offline.
 
@@ -118,18 +118,18 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 **Scope:** `lib/data/`, `lib/features/history/`, `lib/app/`
 
-- [ ] Select and document a maintained SQLite-based Flutter package.
-- [ ] Implement repositories behind the frozen contracts.
-- [ ] Store runs, points, evidence metadata, stories, and achievements.
-- [ ] Copy retained photos into application-controlled storage.
-- [ ] Handle missing media safely.
-- [ ] Define safe deletion and cascading behavior.
-- [ ] Build History empty/populated/error states.
-- [ ] Build Run Summary and saved-story entry points.
-- [ ] Define and evaluate personal achievements.
-- [ ] Assemble navigation and dependency injection.
-- [ ] Add app-level recovery/error presentation.
-- [ ] Add a storage migration/version strategy.
+- [x] Select and document a maintained SQLite-based Flutter package.
+- [x] Implement repositories behind the frozen contracts.
+- [x] Store runs, points, evidence metadata, stories, and achievements.
+- [x] Copy retained photos into application-controlled storage.
+- [x] Handle missing media safely.
+- [x] Define safe deletion and cascading behavior.
+- [x] Build History empty/populated/error states.
+- [x] Build Run Summary and saved-story entry points.
+- [x] Define and evaluate personal achievements.
+- [x] Assemble navigation and dependency injection.
+- [x] Add app-level recovery/error presentation.
+- [x] Add a storage migration/version strategy.
 - [ ] Prepare and verify release configuration.
 
 **Done when:** data survives restart, temporary image paths are not retained, deletion cannot damage unrelated records, real repositories replace fakes without feature rewrites, and the APK installs on API 24+.
@@ -138,23 +138,23 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 ## Parallel integration contract
 
-- [ ] Each workstream supplies fixture/demo data.
+- [x] Each workstream supplies fixture/demo data.
 - [ ] Shared interface changes are agreed with affected owners.
-- [ ] Features never import another feature's private UI or data files.
-- [ ] Integration uses `core/contracts` and immutable domain objects.
-- [ ] Online adapters remain optional and disabled in the offline demo.
+- [x] Features never import another feature's private UI or data files.
+- [x] Integration uses `core/contracts` and immutable domain objects.
+- [x] Online adapters remain optional and disabled in the offline demo.
 - [ ] Members make small, descriptive commits in their owned modules.
 
 No member waits for storage, GPS, backend, or another screen: use fakes until integration.
 
 ## Quality gate before stretch work
 
-- [ ] `flutter analyze` has no errors.
-- [ ] Unit tests cover distance, duration, pace, proximity, achievements, and story serialization.
-- [ ] Widget tests cover Explore, permission denial, tracker controls, History empty state, and export state.
-- [ ] Camera, location, storage, and sharing failures do not cause unhandled exceptions.
-- [ ] Loading, success, empty, offline, and error feedback are visible.
-- [ ] A small API 24+ device layout is usable.
+- [x] `flutter analyze` has no errors.
+- [x] Unit tests cover distance, duration, pace, proximity, achievements, and story serialization.
+- [x] Widget tests cover Explore, permission denial, tracker controls, History empty state, and export state.
+- [x] Camera, location, storage, and sharing failures do not cause unhandled exceptions.
+- [x] Loading, success, empty, offline, and error feedback are visible.
+- [x] A small API 24+ device layout is usable.
 - [ ] Airplane-mode flow passes from launch to exported story.
 
 ## Code-Graph-RAG
@@ -172,20 +172,20 @@ Code-Graph-RAG must never block development with `AGENTS.md`, source search, fix
 
 ## September 4 integration target
 
-- [ ] Connect real repositories to every module.
-- [ ] Connect completed runs to Story Studio.
-- [ ] Connect quest-camera evidence to the active run.
-- [ ] Verify curated and free-run paths.
-- [ ] Verify both destination packs.
+- [x] Connect real repositories to every module.
+- [x] Connect completed runs to Story Studio.
+- [x] Connect quest-camera evidence to the active run.
+- [x] Verify curated and free-run paths.
+- [x] Verify both destination packs.
 - [ ] Test permission combinations on at least two Android versions if available.
 - [ ] Run a 20-30 minute tracking smoke test.
-- [ ] Review dependency and asset licenses.
+- [x] Review dependency and asset licenses.
 - [ ] Capture final screenshots.
 
 ## September 5 submission
 
 - [ ] Freeze features.
-- [ ] Update README with verified versions and commands.
+- [x] Update README with verified versions and commands.
 - [ ] Build/install `apk/app-release.apk` on a clean target.
 - [ ] Produce the 10-30 page report with work division and self-assessment.
 - [ ] Record a 5-10 minute demo with all four members speaking.

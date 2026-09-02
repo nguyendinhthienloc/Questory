@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "1.0.0",
+  "id": "nha-trang",
+  "cityName": "Nha Trang",
+  "countryCode": "VN",
+  "description": "A relaxed coastal pack mixing recognizable waterfront landmarks with small local details.",
+  "lastReviewedAtUtc": "2026-09-01T00:00:00Z",
+  "routes": [
+    {
+      "id": "nha-trang-coastal-morning",
+      "name": "Coastal Morning Run",
+      "description": "An out-and-back route along the central Tran Phu waterfront. Stay on public pedestrian areas and use marked crossings.",
+      "distanceMeters": 3120,
+      "estimatedDurationSeconds": 1560,
+      "difficulty": "Easy",
+      "expectedPolyline": [
+        { "latitude": 12.2349, "longitude": 109.1960, "timestampUtc": "2026-09-01T00:00:00Z" },
+        { "latitude": 12.2388, "longitude": 109.1967, "timestampUtc": "2026-09-01T00:05:00Z" },
+        { "latitude": 12.2434, "longitude": 109.1980, "timestampUtc": "2026-09-01T00:10:00Z" },
+        { "latitude": 12.2486, "longitude": 109.1990, "timestampUtc": "2026-09-01T00:17:00Z" },
+        { "latitude": 12.2434, "longitude": 109.1980, "timestampUtc": "2026-09-01T00:24:00Z" },
+        { "latitude": 12.2388, "longitude": 109.1967, "timestampUtc": "2026-09-01T00:30:00Z" },
+        { "latitude": 12.2349, "longitude": 109.1960, "timestampUtc": "2026-09-01T00:35:00Z" }
+      ],
+      "landmarks": [
+        {
+          "id": "nt-tram-huong",
+          "name": "Tram Huong Tower",
+          "description": "A recognizable tower beside the central waterfront square.",
+          "point": { "latitude": 12.2388, "longitude": 109.1967, "timestampUtc": "2026-09-01T00:00:00Z" }
+        },
+        {
+          "id": "nt-tran-phu-beach",
+          "name": "Tran Phu Beach",
+          "description": "The central public beachfront and promenade.",
+          "point": { "latitude": 12.2434, "longitude": 109.1980, "timestampUtc": "2026-09-01T00:00:00Z" }
+        }
+      ],
+      "questIds": ["nt-tower-frame", "nt-coastal-reflection", "nt-local-pattern"],
+      "safetyNotes": [
+        "This route is descriptive, not a guarantee of safety or access.",
+        "Use public pedestrian areas and marked road crossings.",
+        "Stop if weather, crowds, construction, or traffic make the route unsuitable."
+      ]
+    }
+  ],
+  "quests": [
+    {
+      "id": "nt-tower-frame",
+      "title": "Frame the Tower",
+      "prompt": "Photograph Tram Huong Tower with a natural frame such as a tree, railing, or shadow.",
+      "point": { "latitude": 12.2388, "longitude": 109.1967, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 80,
+      "captionRequired": true,
+      "landmarkId": "nt-tram-huong",
+      "fallback": {
+        "type": "manualConfirmation",
+        "instructions": "If GPS is inaccurate, confirm that you are in the public square and add a caption.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    },
+    {
+      "id": "nt-coastal-reflection",
+      "title": "Coastal Reflection",
+      "prompt": "Find a safe reflection of the sea in glass, water, or a polished surface.",
+      "point": { "latitude": 12.2434, "longitude": 109.1980, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 120,
+      "captionRequired": true,
+      "landmarkId": "nt-tran-phu-beach",
+      "fallback": {
+        "type": "manualConfirmation",
+        "instructions": "Use the beachfront fallback only from a public pedestrian area.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    },
+    {
+      "id": "nt-local-pattern",
+      "title": "Local Pattern Hunt",
+      "prompt": "Capture an overlooked pavement, garden, or architectural pattern without blocking other pedestrians.",
+      "point": { "latitude": 12.2486, "longitude": 109.1990, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 140,
+      "captionRequired": false,
+      "fallback": {
+        "type": "skip",
+        "instructions": "Skip this quest if the area is crowded or the detail is inaccessible.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    }
+  ],
+  "pointsOfInterest": [
+    {
+      "id": "nt-central-waterfront",
+      "name": "Central Waterfront",
+      "description": "A cluster of bundled photo quests near the central promenade.",
+      "point": { "latitude": 12.2408, "longitude": 109.1972, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "questIds": ["nt-tower-frame", "nt-coastal-reflection"]
+    },
+    {
+      "id": "nt-north-promenade",
+      "name": "North Promenade Details",
+      "description": "Small public-space details north of the central square.",
+      "point": { "latitude": 12.2486, "longitude": 109.1990, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "questIds": ["nt-local-pattern"]
+    }
+  ]
+}

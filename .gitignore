@@ -24,3 +24,13 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Local operating-system and Android Studio state
+.DS_Store
+.idea/caches/
+.idea/deviceManager.xml
+.idea/markdown.xml
+.idea/vcs.xml
+
+# Widget Preview related
+.widget_preview/

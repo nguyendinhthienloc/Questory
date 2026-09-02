@@ -4,15 +4,30 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/contracts/share_service.dart';
 import '../../../core/contracts/story_renderer.dart';
 import '../../../core/domain/story_project.dart';
 
+typedef StoryCacheDirectoryProvider = Future<Directory> Function();
+
+Future<Directory> _defaultStoryCacheDirectory() {
+  if (Platform.isAndroid) {
+    return getTemporaryDirectory();
+  }
+  return Future.value(Directory.systemTemp);
+}
+
 class BoundaryStoryRenderer implements StoryRenderer {
-  BoundaryStoryRenderer({required this.boundaryKey});
+  BoundaryStoryRenderer({
+    required this.boundaryKey,
+    StoryCacheDirectoryProvider? cacheDirectoryProvider,
+  }) : _cacheDirectoryProvider =
+            cacheDirectoryProvider ?? _defaultStoryCacheDirectory;
 
   final GlobalKey boundaryKey;
+  final StoryCacheDirectoryProvider _cacheDirectoryProvider;
 
   @override
   Future<StoryExport> renderPng(StoryDocument document) async {
@@ -34,9 +49,12 @@ class BoundaryStoryRenderer implements StoryRenderer {
       if (byteData == null) {
         throw StateError('Flutter could not encode the story as PNG.');
       }
+      // Dart's Directory.systemTemp maps to Android's code_cache directory,
+      // which is not exposed by FileProvider's <cache-path>. path_provider
+      // returns Android's regular cacheDir, matching questory_file_paths.xml.
+      final cacheDirectory = await _cacheDirectoryProvider();
       final exportDirectory = Directory(
-        '${Directory.systemTemp.path}${Platform.pathSeparator}'
-        'questory_exports',
+        '${cacheDirectory.path}${Platform.pathSeparator}questory_exports',
       );
       await exportDirectory.create(recursive: true);
       final safeId = document.id.replaceAll(RegExp('[^a-zA-Z0-9_-]'), '-');

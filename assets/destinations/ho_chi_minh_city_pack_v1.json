@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "1.0.0",
+  "id": "ho-chi-minh-city",
+  "cityName": "Ho Chi Minh City",
+  "countryCode": "VN",
+  "description": "A compact central-city pack focused on public plazas, river views, and architectural details.",
+  "lastReviewedAtUtc": "2026-09-01T00:00:00Z",
+  "routes": [
+    {
+      "id": "hcmc-river-and-city-lights",
+      "name": "River and City Lights",
+      "description": "A compact out-and-back route linking Nguyen Hue Walking Street with the public riverfront. Check event closures before running.",
+      "distanceMeters": 1640,
+      "estimatedDurationSeconds": 900,
+      "difficulty": "Easy",
+      "expectedPolyline": [
+        { "latitude": 10.7768, "longitude": 106.7009, "timestampUtc": "2026-09-01T00:00:00Z" },
+        { "latitude": 10.7752, "longitude": 106.7015, "timestampUtc": "2026-09-01T00:05:00Z" },
+        { "latitude": 10.7725, "longitude": 106.7035, "timestampUtc": "2026-09-01T00:10:00Z" },
+        { "latitude": 10.7720, "longitude": 106.7058, "timestampUtc": "2026-09-01T00:15:00Z" },
+        { "latitude": 10.7725, "longitude": 106.7035, "timestampUtc": "2026-09-01T00:20:00Z" },
+        { "latitude": 10.7752, "longitude": 106.7015, "timestampUtc": "2026-09-01T00:25:00Z" },
+        { "latitude": 10.7768, "longitude": 106.7009, "timestampUtc": "2026-09-01T00:30:00Z" }
+      ],
+      "landmarks": [
+        {
+          "id": "hcmc-nguyen-hue",
+          "name": "Nguyen Hue Walking Street",
+          "description": "A central public plaza lined with architecture and city activity.",
+          "point": { "latitude": 10.7752, "longitude": 106.7015, "timestampUtc": "2026-09-01T00:00:00Z" }
+        },
+        {
+          "id": "hcmc-bach-dang",
+          "name": "Bach Dang Park",
+          "description": "A public riverfront park with views across the Saigon River.",
+          "point": { "latitude": 10.7720, "longitude": 106.7058, "timestampUtc": "2026-09-01T00:00:00Z" }
+        }
+      ],
+      "questIds": ["hcmc-old-new", "hcmc-city-reflection", "hcmc-river-color"],
+      "safetyNotes": [
+        "This route is descriptive, not a guarantee of safety or access.",
+        "Event closures and crowd conditions can change access on Nguyen Hue.",
+        "Ton Duc Thang separates Nguyen Hue from the riverfront: confirm the designated crossing or pedestrian bridge is open, and never enter traffic for a photo."
+      ]
+    }
+  ],
+  "quests": [
+    {
+      "id": "hcmc-old-new",
+      "title": "Old Meets New",
+      "prompt": "Photograph a public view that places older architecture beside a modern city detail.",
+      "point": { "latitude": 10.7760, "longitude": 106.7012, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 100,
+      "captionRequired": true,
+      "landmarkId": "hcmc-nguyen-hue",
+      "fallback": {
+        "type": "manualConfirmation",
+        "instructions": "Confirm that the photo was taken from the public walking-street area.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    },
+    {
+      "id": "hcmc-city-reflection",
+      "title": "City Reflection",
+      "prompt": "Find a reflection of the city in glass or water while remaining in the pedestrian area.",
+      "point": { "latitude": 10.7738, "longitude": 106.7027, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 120,
+      "captionRequired": false,
+      "fallback": {
+        "type": "skip",
+        "instructions": "Skip the quest if events or crowds make the area unsuitable.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    },
+    {
+      "id": "hcmc-river-color",
+      "title": "River Color Story",
+      "prompt": "Capture three strong colours in one safe public riverfront composition.",
+      "point": { "latitude": 10.7720, "longitude": 106.7058, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "radiusMeters": 120,
+      "captionRequired": true,
+      "landmarkId": "hcmc-bach-dang",
+      "fallback": {
+        "type": "manualConfirmation",
+        "instructions": "Confirm that you are inside the public park and add a caption.",
+        "allowedWhenAccuracyExceedsMeters": 50
+      }
+    }
+  ],
+  "pointsOfInterest": [
+    {
+      "id": "hcmc-nguyen-hue-cluster",
+      "name": "Nguyen Hue Details",
+      "description": "Architecture and reflection quests in the public walking-street area.",
+      "point": { "latitude": 10.7752, "longitude": 106.7015, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "questIds": ["hcmc-old-new", "hcmc-city-reflection"]
+    },
+    {
+      "id": "hcmc-riverfront-cluster",
+      "name": "Bach Dang Riverfront",
+      "description": "A bundled colour quest beside the public riverfront.",
+      "point": { "latitude": 10.7720, "longitude": 106.7058, "timestampUtc": "2026-09-01T00:00:00Z" },
+      "questIds": ["hcmc-river-color"]
+    }
+  ]
+}

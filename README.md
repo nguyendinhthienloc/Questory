@@ -57,7 +57,8 @@ The recap may contain the route, distance, duration, average pace, estimated cal
 
 ## Optional online features
 
-- Anonymous, expiring live-location sharing
+- Anonymous, expiring completed-route sharing via the optional Supabase Edge
+  Function (see [docs/ONLINE_SHARING.md](docs/ONLINE_SHARING.md))
 - Live weather
 - Editable Canva handoff
 - Remotely updated destination packs
@@ -100,6 +101,8 @@ Questory uses a colorful film-and-sticker travel-journal style:
 - Active runs are checkpointed so interruption does not silently lose them.
 - Retained photos are copied from temporary camera paths to app storage.
 - Network adapters never block local saving.
+- Online route sharing is opt-in and disabled unless Supabase build defines are
+  provided; local photo paths are never uploaded.
 - The offline demo uses bundled stylized city data and a recorded polyline, not live map tiles.
 - Local data is the source of truth; synchronization is not an MVP requirement.
 

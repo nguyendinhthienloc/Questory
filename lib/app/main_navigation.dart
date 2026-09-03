@@ -199,6 +199,7 @@ class _MainNavigationState extends State<MainNavigation> {
           summary: summary,
           storyRepository: widget.dependencies.stories,
           shareService: widget.dependencies.shareService,
+          liveShareService: widget.dependencies.liveShareService,
           achievements: achievements,
         ),
       ),

@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../../../core/contracts/live_share_service.dart';
 import '../../../core/contracts/share_service.dart';
 import '../../../core/contracts/story_repository.dart';
 import '../../../core/domain/achievement.dart';
@@ -15,12 +17,14 @@ class RunSummaryScreen extends StatelessWidget {
     required this.summary,
     required this.storyRepository,
     required this.shareService,
+    this.liveShareService,
     this.achievements = const [],
   });
 
   final RunSummary summary;
   final StoryRepository storyRepository;
   final ShareService shareService;
+  final LiveShareService? liveShareService;
   final List<Achievement> achievements;
 
   @override
@@ -177,6 +181,10 @@ class RunSummaryScreen extends StatelessWidget {
               ),
           ],
           const SizedBox(height: 24),
+          if (liveShareService != null) ...[
+            _ShareRouteButton(service: liveShareService!, summary: summary),
+            const SizedBox(height: 10),
+          ],
           FilledButton.icon(
             key: const ValueKey('open-story-studio'),
             onPressed: () => Navigator.push<void>(
@@ -220,6 +228,56 @@ class RunSummaryScreen extends StatelessWidget {
     final remainder = (seconds.round() % 60).toString().padLeft(2, '0');
     return '$minutes:$remainder /km';
   }
+}
+
+class _ShareRouteButton extends StatefulWidget {
+  const _ShareRouteButton({required this.service, required this.summary});
+
+  final LiveShareService service;
+  final RunSummary summary;
+
+  @override
+  State<_ShareRouteButton> createState() => _ShareRouteButtonState();
+}
+
+class _ShareRouteButtonState extends State<_ShareRouteButton> {
+  bool _sharing = false;
+
+  Future<void> _share() async {
+    setState(() => _sharing = true);
+    try {
+      final link = await widget.service.createShare(widget.summary);
+      for (final evidence in widget.summary.evidence) {
+        await widget.service.uploadEvidence(share: link, evidence: evidence);
+      }
+      await Clipboard.setData(ClipboardData(text: link.shareUrl));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Share link copied. It expires in 24 hours.')),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not create share link: $error')),
+      );
+    } finally {
+      if (mounted) setState(() => _sharing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => OutlinedButton.icon(
+        key: const ValueKey('share-route-online'),
+        onPressed: _sharing ? null : _share,
+        icon: _sharing
+            ? const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.link_rounded),
+        label: Text(_sharing ? 'CREATING LINK...' : 'SHARE ROUTE ONLINE'),
+      );
 }
 
 class _Metric extends StatelessWidget {

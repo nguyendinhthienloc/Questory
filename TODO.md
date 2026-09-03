@@ -78,7 +78,8 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 
 **Done when:** a deterministic fixture test passes, paused time is excluded, interruption preserves a checkpoint, and a demo run can finish offline.
 
-**Stretch:** anonymous expiring live-location sharing with visible stop and expiry controls.
+**Stretch:** live-location sharing with visible stop and expiry controls. Completed-route
+sharing is available as an optional Supabase link service; see `docs/ONLINE_SHARING.md`.
 
 **Report/video:** tracking architecture, permissions, calculations, offline behavior, and tracker demonstration.
 

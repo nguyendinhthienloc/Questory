@@ -130,17 +130,19 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 - [x] Assemble navigation and dependency injection.
 - [x] Add app-level recovery/error presentation.
 - [x] Add a storage migration/version strategy.
-- [ ] Prepare and verify release configuration.
+- [x] Prepare and verify release configuration. Gradle uses an ignored private
+  upload keystore, the release APK passes APK Signature Scheme v2 verification,
+  and it installs and launches on a clean Android emulator.
 
-**Verification (September 2, 2026):** Module D now covers History empty,
+**Verification (September 3, 2026):** Module D now covers History empty,
 populated, retry/error, delete-confirmation, related-story cascade, retained
 photo cleanup, missing-media fallback, achievement boundaries, and active-run
 resume/discard recovery. File-backed SQLite tests also verify database restart
 and deletion isolation for runs, GPS points, evidence, stories, and
 achievements. All 53 project tests pass, `flutter analyze` reports no issues,
-formatting is clean, and the debug APK builds successfully. Android
-airplane-mode, clean API 24 installation, and final release signing remain
-separate release checks.
+and formatting is clean. A privately signed release APK passes v2 signature
+verification, installs and launches on a clean API 24+ emulator, and the
+offline run-to-history/story flow survives an app restart in airplane mode.
 
 **Done when:** data survives restart, temporary image paths are not retained, deletion cannot damage unrelated records, real repositories replace fakes without feature rewrites, and the APK installs on API 24+.
 
@@ -165,7 +167,7 @@ No member waits for storage, GPS, backend, or another screen: use fakes until in
 - [x] Camera, location, storage, and sharing failures do not cause unhandled exceptions.
 - [x] Loading, success, empty, offline, and error feedback are visible.
 - [x] A small API 24+ device layout is usable.
-- [ ] Airplane-mode flow passes from launch to exported story.
+- [x] Airplane-mode flow passes from launch to exported story.
 
 ## Code-Graph-RAG
 
@@ -196,7 +198,7 @@ Code-Graph-RAG must never block development with `AGENTS.md`, source search, fix
 
 - [ ] Freeze features.
 - [x] Update README with verified versions and commands.
-- [ ] Build/install `apk/app-release.apk` on a clean target.
+- [ ] Copy the verified release APK into `apk/app-release.apk` for submission.
 - [ ] Produce the 10-30 page report with work division and self-assessment.
 - [ ] Record a 5-10 minute demo with all four members speaking.
 - [ ] Verify the public demo link.

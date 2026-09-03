@@ -12,7 +12,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 The complete offline MVP is now connected: Explore, two bundled city packs, route details, free-run discovery, foreground GPS tracking, location-aware photo quests, retained photos, SQLite history, achievements, Run Summary, Story Studio, exact-size PNG export, and Android sharing. The inherited camera prototype remains only as unused baseline source; app startup now opens Questory's Explore screen.
 
-Local verification on 2 September 2026 used Flutter 3.47.2 and Dart 3.13.2. All 53 combined tests passed and `flutter analyze` reported no issues. The suite includes file-backed SQLite restart and deletion-isolation coverage for runs, GPS points, evidence, stories, and achievements. Debug and release APKs built successfully; the release APK installed and launched on Android devices. Smoke testing covered Explore, both city cards, Route Details, Free Run discovery, Run Tracker, permission recovery, camera capture with captions, PNG export, and the Android share sheet. A real foreground GPS session, airplane mode, and an API 24 target still require hands-on verification before release claims.
+Local verification through 3 September 2026 used Flutter 3.47.2 and Dart 3.13.2. All 53 combined tests passed and `flutter analyze` reported no issues. The suite includes file-backed SQLite restart and deletion-isolation coverage for runs, GPS points, evidence, stories, and achievements. Debug and privately signed release APKs built successfully; the release APK passed v2 signature verification, installed and launched on a clean API 24+ Android emulator, and retained offline run, achievement, and story data after an airplane-mode app restart. Smoke testing covered Explore, both city cards, Route Details, Free Run discovery, Run Tracker, permission recovery, camera capture with captions, PNG export, and the Android share sheet. A real foreground GPS session and testing on an exact API 24 system image still require hands-on verification.
 
 ## Team and modular ownership
 
@@ -146,6 +146,12 @@ flutter run
 flutter run -d edge
 flutter build apk --release
 ```
+
+Release builds require a private upload keystore. Copy
+`android/key.properties.example` to the ignored `android/key.properties`, set
+the absolute keystore path and private credentials, and keep both files outside
+Git. Gradle intentionally refuses to create a release build when signing is not
+configured instead of silently signing a release artifact with the debug key.
 
 If Flutter is installed outside `PATH`, add your own Flutter SDK's `bin`
 directory to `PATH`, then use the same commands:

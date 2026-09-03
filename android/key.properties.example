@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties and replace every placeholder.
+# Never commit key.properties or the keystore itself.
+storeFile=C:/Users/YOUR_USER/.questory/release/questory-upload.jks
+storePassword=REPLACE_WITH_PRIVATE_PASSWORD
+keyAlias=questory-upload
+keyPassword=REPLACE_WITH_PRIVATE_PASSWORD

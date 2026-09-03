@@ -198,7 +198,9 @@ Code-Graph-RAG must never block development with `AGENTS.md`, source search, fix
 
 - [ ] Freeze features.
 - [x] Update README with verified versions and commands.
-- [ ] Copy the verified release APK into `apk/app-release.apk` for submission.
+- [-] Build/install `apk/app-release.apk` on a clean target. The signed release
+  APK has been built and installed successfully; copying it into the submission
+  `apk/` directory remains.
 - [ ] Produce the 10-30 page report with work division and self-assessment.
 - [ ] Record a 5-10 minute demo with all four members speaking.
 - [ ] Verify the public demo link.

@@ -13,7 +13,7 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 The Android offline MVP is connected: Explore, two bundled city packs, route details, free-run discovery, foreground-capable GPS tracking, location-aware photo quests, retained photos, SQLite history, achievements, Run Summary, Story Studio, exact-size PNG export, and Android sharing. The inherited camera prototype remains only as unused baseline source; the production entry point is `lib/main.dart`.
 
 The final automated review on 5 September 2026 used Flutter 3.44.8 and Dart
-3.12.2. All 62 tests passed, `flutter analyze` reported no issues, and the
+3.12.2. All 58 tests passed, `flutter analyze` reported no issues, and the
 privately signed release APK passed signature and manifest verification. A
 debug web build also compiled, but that does not make the production app
 web-compatible: `lib/main.dart` opens the mobile SQLite database during
@@ -29,7 +29,7 @@ require hands-on verification.
 | --- | --- | --- |
 | 24125023 | Nguyen Trong Van Viet | Destinations and quests |
 | 24125078 | Nguyen Hong Tan Tai | Running and location tracking |
-| 24125093 | Nguyen Dinh Thien Loc | Story Studio and export |
+| 24125093 | Nguyen Dinh Thien Loc | Team leader; Story Studio and export |
 | 24125107 | Tran Le Anh Tuan | Persistence, history, achievements, integration |
 
 Every module develops against shared interfaces and fixture data, so unfinished storage, GPS, or UI work does not block another member. See [TODO.md](TODO.md) and [AGENTS.md](AGENTS.md).
@@ -67,7 +67,7 @@ The recap may contain the route, distance, duration, average pace, estimated cal
 ## Optional online features
 
 - Anonymous, expiring completed-route sharing via the optional Supabase Edge
-  Function (see [docs/ONLINE_SHARING.md](docs/ONLINE_SHARING.md))
+  Function (see [Server guide](docs/SERVER_GUIDE.md))
 - Live weather
 - Editable Canva handoff
 - Remotely updated destination packs
@@ -82,7 +82,10 @@ The demo must not depend on these. Canva OAuth, live sharing, and weather begin 
 
 Destination data is bundled and versioned. GPS proximity can verify a quest, but poor accuracy must never trap the user; allow a documented fallback or skip.
 
-The route text and approximate public-space access were desk-reviewed against tourism and local-government sources. See [docs/destination_content_review.md](docs/destination_content_review.md). This is not a field safety certification; current signs, closures, crossings, traffic, weather, and events always take priority.
+The route text and approximate public-space access were desk-reviewed against
+tourism and local-government sources. See the [Technical reference](docs/TECHNICAL_REFERENCE.md#destination-content-review).
+This is not a field safety certification; current signs, closures, crossings,
+traffic, weather, and events always take priority.
 
 ## Visual direction
 
@@ -151,11 +154,11 @@ provided.
 Prerequisites are Flutter, the Android SDK, and a running API 24+ Android
 device or emulator.
 
-Story Studio contributors can test the module independently with the
-[Story Studio testing guide](docs/STORY_STUDIO_TESTING.md).
-The connected demo journey is drawn in [USER_FLOW.md](docs/USER_FLOW.md).
-Use the [pre-demo checklist](docs/PRE_DEMO_CHECKLIST.md) for the complete
-Android smoke test, optional server setup, screenshots, and submission freeze.
+The [App guide](docs/APP_GUIDE.md) contains the production user flow, platform
+boundaries, Story Studio harness, and feature checks. The
+[Server guide](docs/SERVER_GUIDE.md) covers the optional local and hosted
+sharing service. Use the [Release guide](docs/RELEASE_GUIDE.md) for CI, signing,
+device verification, screenshots, and submission packaging.
 
 ```shell
 flutter pub get
@@ -182,8 +185,8 @@ If the screen says `databaseFactory not initialized`, the app was launched on
 an unsupported desktop or browser target. Retrying cannot fix that target
 mismatch. No server needs to be started; select an Android device instead.
 
-To include the optional online route-sharing feature, follow
-[ONLINE_SHARING.md](docs/ONLINE_SHARING.md). The recommended filming setup uses
+To include the optional online route-sharing feature, follow the
+[Server guide](docs/SERVER_GUIDE.md). The recommended filming setup uses
 a hosted Supabase project over HTTPS. Local Supabase is also documented for
 development, but it is not required for the graded offline journey.
 
@@ -192,8 +195,8 @@ Release builds require a private upload keystore. Copy
 the absolute keystore path and private credentials, and keep both files outside
 Git. Gradle intentionally refuses to create a release build when signing is not
 configured instead of silently signing a release artifact with the debug key.
-The current machine is already configured; see
-[RELEASE_SIGNING.md](docs/RELEASE_SIGNING.md) before moving or rebuilding the
+The current machine is already configured; see the
+[Release guide](docs/RELEASE_GUIDE.md#android-release-signing) before moving or rebuilding the
 release on another computer.
 
 If Gradle reports `Unable to establish loopback connection` on Windows, use a
@@ -218,8 +221,8 @@ APKs are generated at `build/app/outputs/flutter-apk/app-debug.apk` and `build/a
 
 The first Android run may download the required SDK platform or CMake. The Java restricted-method and Kotlin Gradle Plugin messages currently shown by Gradle are migration warnings; they did not prevent the verified build.
 
-See [docs/dependency_review.md](docs/dependency_review.md) for direct package,
-license, offline, and bundled-asset notes.
+See the [Technical reference](docs/TECHNICAL_REFERENCE.md) for dependency,
+license, offline, bundled-asset, and destination-source notes.
 
 GitHub Actions runs on every push and pull request to `main`, and can also be started manually from the Actions page. It uses the committed `pubspec.lock`, rejects formatting changes in `lib/features/` and `test/`, fails on analyzer errors or warnings, runs the test suite with coverage, builds a debug APK, and retains that APK as a workflow artifact for 14 days.
 

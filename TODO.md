@@ -78,7 +78,7 @@ Do not begin live sharing, Canva OAuth, live weather, remote content, or extra c
 **Done when:** a deterministic fixture test passes, paused time is excluded, interruption preserves a checkpoint, and a demo run can finish offline.
 
 **Stretch:** live-location sharing with visible stop and expiry controls. Completed-route
-sharing is available as an optional Supabase link service; see `docs/ONLINE_SHARING.md`.
+sharing is available as an optional Supabase link service; see `docs/SERVER_GUIDE.md`.
 
 **Report/video:** tracking architecture, permissions, calculations, offline behavior, and tracker demonstration.
 
@@ -139,7 +139,7 @@ populated, retry/error, delete-confirmation, related-story cascade, retained
 photo cleanup, missing-media fallback, achievement boundaries, and active-run
 resume/discard recovery. File-backed SQLite tests also verify database restart
 and deletion isolation for runs, GPS points, evidence, stories, and
-achievements. All 62 project tests pass, `flutter analyze` reports no issues,
+achievements. All 58 project tests pass, `flutter analyze` reports no issues,
 and the current release APK passes v2 signature, package, API 24, and ABI
 verification. A debug web build compiles. Android APK installation and
 airplane-mode persistence were verified previously; no Android target was

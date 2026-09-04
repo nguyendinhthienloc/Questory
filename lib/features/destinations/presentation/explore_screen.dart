@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/contracts/destination_repository.dart';
 import '../../../core/domain/destination_models.dart';
 import '../../../data/local/bundled_destination_repository.dart';
@@ -242,6 +243,11 @@ class _DestinationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final artworkPath = switch (pack.id) {
+      'nha-trang' => 'assets/destinations/artwork/nha_trang_coast.png',
+      'ho-chi-minh-city' => 'assets/destinations/artwork/ho_chi_minh_city.png',
+      _ => null,
+    };
     return Semantics(
       button: true,
       label: 'Open ${pack.cityName}',
@@ -265,19 +271,33 @@ class _DestinationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: accentColor,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Icon(
-                  pack.id == 'nha-trang'
-                      ? Icons.waves_rounded
-                      : Icons.location_city_rounded,
-                  color: Colors.white,
-                  size: 34,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: SizedBox(
+                  width: 76,
+                  height: 76,
+                  child: artworkPath == null
+                      ? ColoredBox(
+                          color: accentColor,
+                          child: const Icon(
+                            Icons.explore_rounded,
+                            color: Colors.white,
+                            size: 34,
+                          ),
+                        )
+                      : Image.asset(
+                          artworkPath,
+                          fit: BoxFit.cover,
+                          cacheWidth: 256,
+                          errorBuilder: (_, __, ___) => ColoredBox(
+                            color: accentColor,
+                            child: const Icon(
+                              Icons.image_not_supported_outlined,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -436,13 +456,4 @@ class _MessageState extends StatelessWidget {
       ),
     );
   }
-}
-
-abstract final class QuestoryColors {
-  static const paper = Color(0xFFF7F1E3);
-  static const ink = Color(0xFF171717);
-  static const coral = Color(0xFFFF6B5E);
-  static const cobalt = Color(0xFF3157C8);
-  static const teal = Color(0xFF0B7A75);
-  static const yellow = Color(0xFFFFD447);
 }

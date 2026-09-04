@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -45,6 +46,7 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
   late final StoryRenderer _renderer;
   late StoryEditorController _editor;
   late StoryTemplate _template;
+  late String _savedDocumentJson;
   var _status = 'Tap an element, then drag, pinch, or twist to edit it.';
   var _isExporting = false;
 
@@ -56,10 +58,10 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
     _shareService = widget.shareService ?? const AndroidShareService();
     _renderer = widget.renderer ??
         BoundaryStoryRenderer(boundaryKey: _exportBoundaryKey);
-    _template = storyTemplates.first;
-    _editor = StoryEditorController(
-      widget.initialDocument ?? _documentFor(_template),
-    )..addListener(_refresh);
+    _template = _templateFor(widget.initialDocument);
+    final initialDocument = widget.initialDocument ?? _documentFor(_template);
+    _savedDocumentJson = jsonEncode(initialDocument.toJson());
+    _editor = StoryEditorController(initialDocument)..addListener(_refresh);
   }
 
   @override
@@ -85,17 +87,54 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
     );
   }
 
-  void _selectTemplate(StoryTemplate template) {
+  StoryTemplate _templateFor(StoryDocument? document) {
+    if (document == null) return storyTemplates.first;
+    return storyTemplates.firstWhere(
+      (template) => document.id.endsWith('-${template.id}'),
+      orElse: () => storyTemplates.first,
+    );
+  }
+
+  bool get _hasUnsavedChanges =>
+      jsonEncode(_editor.document.toJson()) != _savedDocumentJson;
+
+  Future<void> _selectTemplate(StoryTemplate template) async {
+    if (template.id == _template.id) return;
+    if (_hasUnsavedChanges) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Switch template?'),
+          content: const Text(
+            'Unsaved edits to this story will be replaced by the new template.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('KEEP EDITING'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('SWITCH'),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true || !mounted) return;
+    }
+    final document = _documentFor(template);
     setState(() {
       _template = template;
       _status = template.description;
+      _savedDocumentJson = jsonEncode(document.toJson());
     });
-    _editor.replaceDocument(_documentFor(template));
+    _editor.replaceDocument(document);
   }
 
   Future<void> _save() async {
     try {
       await _repository.save(_editor.document);
+      _savedDocumentJson = jsonEncode(_editor.document.toJson());
       _setStatus('Editable project saved locally.');
     } catch (error) {
       _setStatus('Save failed: $error');
@@ -110,6 +149,7 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
         return;
       }
       _editor.replaceDocument(saved);
+      _savedDocumentJson = jsonEncode(saved.toJson());
       _setStatus('Saved project reopened with its edits and layer order.');
     } catch (error) {
       _setStatus('Open failed: $error');

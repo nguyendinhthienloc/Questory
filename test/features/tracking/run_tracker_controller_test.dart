@@ -69,6 +69,36 @@ void main() {
     controller.dispose();
   });
 
+  test('does not count time spent waiting for location permission', () async {
+    final started = DateTime.utc(2026, 9, 2, 1);
+    final clock = FakeClock(started);
+    final locations = _AdvancingPermissionTracker(
+      clock: clock,
+      delay: const Duration(minutes: 2),
+    );
+    final controller = RunTrackerController(
+      pack: _pack(),
+      route: _pack().routes.first,
+      repository: FakeRunRepository(),
+      locationTracker: locations,
+      clock: clock,
+    );
+
+    await controller.start();
+
+    expect(controller.lifecycle, RunLifecycle.active);
+    expect(controller.activeDuration, Duration.zero);
+    expect(
+      controller.session!.activeSegmentStartedAtUtc,
+      started.add(const Duration(minutes: 2)),
+    );
+    clock.advance(const Duration(minutes: 1));
+    expect(controller.activeDuration, const Duration(minutes: 1));
+
+    controller.dispose();
+    await locations.close();
+  });
+
   test('restores an active checkpoint as paused without counting downtime',
       () async {
     final started = DateTime.utc(2026, 9, 2, 1);
@@ -103,6 +133,19 @@ void main() {
     expect(repository.active!.lifecycle, RunLifecycle.paused);
     controller.dispose();
   });
+}
+
+class _AdvancingPermissionTracker extends FakeLocationTracker {
+  _AdvancingPermissionTracker({required this.clock, required this.delay});
+
+  final FakeClock clock;
+  final Duration delay;
+
+  @override
+  Future<LocationPermissionStatus> requestPermission() async {
+    clock.advance(delay);
+    return LocationPermissionStatus.granted;
+  }
 }
 
 GeoPoint _point(double latitude, double longitude, DateTime time) => GeoPoint(

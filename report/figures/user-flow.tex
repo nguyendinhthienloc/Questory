@@ -1,0 +1,30 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  node distance=5mm and 6mm,
+  box/.style={draw=QuestInk,rounded corners=2mm,fill=QuestPaper,
+              minimum width=29mm,minimum height=10mm,align=center,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,color=QuestTeal}]
+  \node[box] (explore) {Explore};
+  \node[box,right=of explore] (city) {Destination};
+  \node[box,right=of city] (route) {Route Details};
+  \node[box,below=of city] (tracker) {Run Tracker};
+  \node[box,left=of tracker] (camera) {Quest Camera};
+  \node[box,right=of tracker] (summary) {Run Summary};
+  \node[box,right=of summary] (studio) {Story Studio};
+  \node[box,below=of summary] (journey) {Journey};
+  \draw[arr] (explore) -- (city);
+  \draw[arr] (city) -- (route);
+  \draw[arr] (route) -- (tracker);
+  \draw[arr] (city) -- node[right,font=\scriptsize]{Free Run} (tracker);
+  \draw[arr] (tracker) -- (camera);
+  \draw[arr] (camera) -- (tracker);
+  \draw[arr] (tracker) -- (summary);
+  \draw[arr] (summary) -- (studio);
+  \draw[arr] (summary) -- (journey);
+  \draw[arr] (journey) -- (summary);
+  \draw[arr] (journey) to[bend left=24] (studio);
+\end{tikzpicture}
+\caption{Questory's end-to-end production user flow.}
+\end{figure}
+

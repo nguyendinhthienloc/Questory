@@ -12,7 +12,7 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
-      QuestoryApp(storyRepository: FakeStoryRepository()),
+      QuestoryStoryDemoApp(storyRepository: FakeStoryRepository()),
     );
     await tester.pumpAndSettle();
 
@@ -54,7 +54,7 @@ void main() {
     tester,
   ) async {
     final repository = FakeStoryRepository();
-    await tester.pumpWidget(QuestoryApp(storyRepository: repository));
+    await tester.pumpWidget(QuestoryStoryDemoApp(storyRepository: repository));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const ValueKey('nav-studio')));
@@ -89,7 +89,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(360, 640));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
-      QuestoryApp(storyRepository: FakeStoryRepository()),
+      QuestoryStoryDemoApp(storyRepository: FakeStoryRepository()),
     );
     await tester.pumpAndSettle();
 

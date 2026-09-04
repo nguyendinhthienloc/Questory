@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:questory/core/fixtures/fake_story_services.dart';
+import 'package:questory/features/story_studio/data/story_templates.dart';
 import 'package:questory/features/story_studio/presentation/story_studio_screen.dart';
 
 void main() {
@@ -156,5 +157,49 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('selects an initial document template and protects unsaved edits',
+      (
+    tester,
+  ) async {
+    final initial = storyTemplates[1].createDocument(
+      documentId: 'story-run-film-roll',
+      sourceRunId: 'run',
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StoryStudioScreen(
+          initialDocument: initial,
+          repository: FakeStoryRepository(),
+          renderer: FakeStoryRenderer(),
+          shareService: FakeShareService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final filmRoll = tester.widget<ChoiceChip>(
+      find.widgetWithText(ChoiceChip, 'Film Roll'),
+    );
+    expect(filmRoll.selected, isTrue);
+
+    await tester
+        .tap(find.byKey(const ValueKey('story-run-film-roll-photo-one')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('story-rotate-left')));
+    await tester.pump();
+    await tester.tap(find.text('City Sprint'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Switch template?'), findsOneWidget);
+    await tester.tap(find.text('KEEP EDITING'));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<ChoiceChip>(find.widgetWithText(ChoiceChip, 'Film Roll'))
+          .selected,
+      isTrue,
+    );
   });
 }

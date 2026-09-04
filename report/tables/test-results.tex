@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{40mm}p{29mm}X@{}}
+\toprule
+\textbf{Verification} & \textbf{Result} & \textbf{Meaning} \\
+\midrule
+\code{flutter analyze} & \status{Passed} & No static-analysis issues in the
+verified repository state \\
+Complete Flutter test suite & \status{62 passed} & Domain, controller,
+persistence, widget, navigation, and export behaviors passed \\
+Debug web compilation & \status{Passed} & Shared Flutter code compiles; this
+does not claim production browser persistence support \\
+LaTeX build and log scan & \status{Passed} & Report compiles reproducibly; final
+page render is visually inspected after screenshots are inserted \\
+Android minimum SDK & \status{API 24} & The application build explicitly
+supports the required minimum Android level \\
+\bottomrule
+\end{tabularx}
+\caption{Verified automated evidence as of 5 September 2026.}
+\end{table}

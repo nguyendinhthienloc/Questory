@@ -1,0 +1,29 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{31mm}p{35mm}X@{}}
+\toprule
+\textbf{Area} & \textbf{Technology} & \textbf{Reason} \\
+\midrule
+Application & Flutter and Dart & Typed cross-platform UI, mature Android
+tooling, immutable value models, and testable widgets \\
+Local database & SQLite through \code{sqflite} & Transactional, versioned,
+offline application records on Android \\
+Location & \code{geolocator} & Permission, service-state, position stream, and
+foreground-notification settings behind a contract \\
+Camera & \code{image_picker} & Native camera handoff with a small adapter surface \\
+Filesystem & \code{path_provider}, \code{path} & App-controlled support and cache
+locations without paths in widgets \\
+Export and share & Flutter image codecs, \code{share_plus} & Deterministic PNG
+generation and the Android system share sheet \\
+Optional remote & HTTP plus Supabase Edge Functions & Small REST boundary,
+anonymous expiring records, and no SDK in the domain \\
+Testing & \code{flutter_test} and deterministic fakes & Logic, widget states,
+navigation, serialization, and failure behavior without devices or a server \\
+Report & XeLaTeX and \code{latexmk} & Reproducible A4 output, modular source,
+stable tables, diagrams, references, and automated reruns \\
+\bottomrule
+\end{tabularx}
+\caption{Principal technologies and their roles.}
+\end{table}
+

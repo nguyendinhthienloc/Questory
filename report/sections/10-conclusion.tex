@@ -1,0 +1,31 @@
+\section{Conclusion}
+Questory demonstrates a complete offline-first Android application rather than a
+visual-only prototype. Its product loop begins with locally bundled Vietnamese
+city content, records a real activity through an explicit and recoverable state
+machine, evaluates location-aware photo quests, persists summaries and evidence,
+and ends with a deterministic editable story export. The architecture isolates
+device and server concerns behind contracts, allowing both reliable failure
+behavior and substantial automated verification.
+
+The implementation's main strength is coherence: every major feature contributes
+to the same local journey and remains useful without an account or network. The
+optional Supabase adapter adds anonymous expiring links without weakening that
+invariant. The result satisfies the required Android, navigation, persistence,
+device-integration, collaboration, and reporting scope while maintaining a
+distinctive identity centered on running, discovery, and personal storytelling.
+
+\section*{References}
+\begin{enumerate}
+  \item Flutter, \emph{Flutter documentation}, \url{https://docs.flutter.dev/}.
+  \item Android Developers, \emph{Request location access at runtime},
+        \url{https://developer.android.com/develop/sensors-and-location/location/permissions/runtime}.
+  \item Android Developers, \emph{Foreground service types},
+        \url{https://developer.android.com/develop/background-work/services/fgs/service-types}.
+  \item SQLite, \emph{About SQLite}, \url{https://www.sqlite.org/about.html}.
+  \item Supabase, \emph{Local development with schema migrations},
+        \url{https://supabase.com/docs/guides/local-development/cli-workflows}.
+  \item Supabase, \emph{Edge Functions development environment},
+        \url{https://supabase.com/docs/guides/functions/development-environment}.
+  \item Questory repository documentation, source code, versioned assets, tests,
+        and Git history, reviewed 5 September 2026.
+\end{enumerate}

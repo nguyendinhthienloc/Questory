@@ -1,0 +1,48 @@
+\section{Privacy, reliability, and quality assurance}
+
+\subsection{Permission and privacy model}
+Questory requests only permissions connected to a visible action. Location is
+explained immediately before the system prompt; camera use begins from a quest
+action. Precise tracks, captions, and retained image paths are not intentionally
+logged. No account is required. Online sharing is opt-in, visible, time-limited,
+and restricted to a summarized payload rather than the editable local database.
+An explicit confirmation describes the precise route and media that will leave
+the device before any network request begins.
+
+The app never promises that a public route is safe. Bundled notes remind the user
+to check current pedestrian conditions, weather, traffic, lighting, and local
+rules. Pause, finish, discard, and stop-sharing controls must remain discoverable.
+
+\subsection{Failure handling}
+The implementation treats expected failures as product states: unavailable city
+content, denied permission, disabled location service, camera cancellation,
+missing retained media, storage failure, export failure, remote failure, and
+empty History. Network failure cannot cancel or alter a local run. Zero-distance
+and missing-photo cases have safe representations instead of crashes.
+
+\subsection{Automated verification}
+\input{tables/test-results}
+
+Tests cover distance calculations and invalid-jump filtering, active versus
+paused duration, zero-distance pace, quest proximity and fallback, achievement
+evaluation, persistence round-trips, story transforms and serialization,
+undo/redo, responsive screens, permission recovery, navigation, and export
+feedback. Platform plugins are wrapped so these behaviors are exercised with
+deterministic repositories, trackers, clocks, photo stores, renderers, and share
+services.
+
+\subsection{Visual and accessibility review}
+Core screens were rendered at a representative Android portrait size for the
+figures in this report. The review checks clipped text, overflow, contrast,
+control reachability, status meaning, empty/error copy, and separation between
+editor controls and exported story content. Real-device review remains important
+for system permission dialogs, camera return behavior, notification appearance,
+and continuous GPS under background conditions.
+
+\subsection{Engineering limitations}
+The product deliberately excludes turn-by-turn navigation, public rankings,
+weather, accounts, cloud synchronization, and Canva handoff. These would expand
+permissions, availability risks, and privacy obligations without improving the
+offline academic flow. The codebase also contains a focused Story Studio browser
+harness; it is development support and must not be confused with the Android
+production entry point.

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/contracts/clock.dart';
 import '../../../core/contracts/location_tracker.dart';
 import '../../../core/contracts/photo_store.dart';
@@ -10,7 +11,6 @@ import '../../../core/domain/destination_models.dart';
 import '../../../core/domain/run_session.dart';
 import '../../../core/domain/run_models.dart';
 import '../../destinations/application/quest_location_checker.dart';
-import '../../destinations/presentation/explore_screen.dart';
 import '../../quest_camera/presentation/quest_camera_screen.dart';
 import '../application/run_tracker_controller.dart';
 
@@ -141,9 +141,6 @@ class _RunTrackerScreenState extends State<RunTrackerScreen> {
       final evidence = [...?_controller.session?.evidence];
       try {
         await _controller.discard();
-        for (final item in evidence) {
-          await widget.photoStore.delete(item.photoPath);
-        }
       } catch (error) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +149,26 @@ class _RunTrackerScreenState extends State<RunTrackerScreen> {
         }
         return;
       }
-      if (mounted) Navigator.pop(context);
+      var cleanupFailed = false;
+      for (final item in evidence) {
+        try {
+          await widget.photoStore.delete(item.photoPath);
+        } catch (_) {
+          cleanupFailed = true;
+        }
+      }
+      if (mounted) {
+        if (cleanupFailed) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Run discarded. Some retained photos could not be removed.',
+              ),
+            ),
+          );
+        }
+        Navigator.pop(context);
+      }
     }
   }
 

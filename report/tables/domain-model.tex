@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{31mm}X@{}}
+\toprule
+\textbf{Model} & \textbf{Role} \\
+\midrule
+\code{GeoPoint} & Latitude, longitude, UTC timestamp, and optional accuracy or altitude \\
+\code{DestinationPack} & City metadata, schema and pack version, routes, quests, and discovery points \\
+\code{RoutePlan} & Expected polyline, distance, duration, landmarks, safety notes, and quest IDs \\
+\code{Quest} & Prompt, point, radius, caption rule, evidence expectation, and fallback \\
+\code{QuestEvidence} & Retained photo path, point, timestamp, caption, and quest identity \\
+\code{RunSession} & Recoverable immutable snapshot of the active lifecycle and accumulated state \\
+\code{RunSummary} & Final track, active duration, distance, pace inputs, evidence, and landmarks \\
+\code{StoryDocument} & Serializable 1080 by 1920 canvas, ordered elements, transforms, and source run \\
+\code{Achievement} & Stable criterion, progress, target, and optional UTC unlock timestamp \\
+\bottomrule
+\end{tabularx}
+\caption{Principal shared domain models.}
+\end{table}
+

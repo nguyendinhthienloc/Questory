@@ -1,0 +1,40 @@
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{7mm}p{31mm}p{52mm}X@{}}
+\toprule
+\textbf{Step} & \textbf{User action} & \textbf{Application response} &
+\textbf{Offline and recovery behavior} \\
+\midrule
+1 & Launch Questory & Initialize local dependencies and open Explore with the
+Nha Trang and Ho Chi Minh City packs. & If initialization fails, show a retryable
+local-storage error instead of an empty or misleading home screen. \\
+2 & Choose a destination & Display bundled routes, landmarks, quests, estimates,
+and safety notes. & All launch content is packaged with the application; map tiles
+and a backend are not required. \\
+3 & Select a curated route or Free Run & Carry the selected route into tracking,
+or create an unrestricted session using the same recording pipeline. & The user
+can return without starting; no data is recorded before an explicit start. \\
+4 & Start tracking & Explain location use, check GPS service, request permission,
+and begin checkpointed recording after approval. & Denial and disabled GPS lead
+to recovery guidance; pause, resume, finish, and discard remain explicit. \\
+5 & Complete a photo quest & Validate proximity or a documented fallback, open
+the camera, require evidence and any necessary caption, then return to tracking.
+& Captured evidence is copied from temporary camera storage into app-controlled
+local storage. \\
+6 & Finish the run & Derive duration, distance, pace, quest results, and personal
+achievements; persist the summary; then offer Story Studio or Journey. & Invalid
+GPS jumps are filtered, zero-distance pace is handled, and the completed run is
+available without a network. \\
+7 & Build and share a story & Create or reopen an editable 1080 by 1920 project,
+arrange content, save it, export a deterministic PNG, and open Android sharing.
+& Editing and export are local; a failed share does not remove the saved project
+or completed run. \\
+8 & Revisit Journey & Browse prior runs and stories, reopen a summary or project,
+or deliberately delete a run. & Deletion removes related stories first, restores
+them if run deletion fails, and cleans retained photos only after consistency is
+confirmed. \\
+\bottomrule
+\end{tabularx}
+\caption{Detailed production user flow and its recovery paths.}
+\end{table}

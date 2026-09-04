@@ -1,0 +1,50 @@
+\section{Product scope and user experience}
+
+\subsection{Connected application surfaces}
+\input{tables/screen-map}
+
+The production navigation provides more than the minimum three to four connected
+screens. The bottom navigation keeps Explore and Journey understandable, while
+route selection, tracking, evidence capture, summary, and Story Studio appear as
+focused tasks in the natural order of use.
+
+\input{figures/user-flow}
+
+\subsection{End-to-end user flow}
+\input{tables/user-flow-steps}
+
+The diagram and table describe the same production journey at two levels: the
+diagram shows how screens connect, while the table records the user action,
+application response, and recovery behavior at each stage. Importantly, neither
+curated routes nor Free Run depend on a server. Bundled destination content,
+SQLite persistence, device location, retained photographs, story editing, and
+PNG export remain available offline. Only explicitly optional integrations,
+such as live sharing, may require connectivity.
+
+\subsection{Primary journey in detail}
+The user begins in Explore, where both launch packs are loaded from versioned
+JSON bundled with the application. Selecting a city reveals its routes,
+landmarks, quests, pack version, and offline status. A curated route provides an
+expected path, estimated distance, duration, and safety notes. Free Run keeps the
+same recording and storytelling pipeline without requiring a route.
+
+Immediately before tracking, Questory explains why precise location is needed.
+After confirmation, the application checks the device service and requests
+permission. The tracker exposes start, pause, resume, finish, and discard actions.
+Quest cards display their radius and fallback rule. Capture opens the device
+camera only after proximity or explicit fallback confirmation.
+
+Finishing produces a summary from the immutable session: active duration,
+distance, pace, track, landmarks, completed and skipped quests, retained evidence,
+and derived achievements. The result is stored in History and may become the
+source of a Story Studio project. The story can be edited, saved, reopened,
+exported as a 1080 by 1920 PNG, and passed to the Android share sheet.
+
+\appscreenshot{images/explore.png}{102mm}{Explore uses bundled city packs and clearly communicates offline availability.}
+
+\subsection{Interface direction}
+The visual language uses paper-like neutral surfaces, teal actions, coral and
+yellow accents, heavy display type, rounded cards, film frames, labels, and
+stickers. Solid colors avoid reproduction surprises and satisfy the product rule
+against gradients. Large controls support outdoor use; status labels and text do
+not rely on color alone.

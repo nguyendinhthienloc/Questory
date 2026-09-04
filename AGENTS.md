@@ -10,15 +10,19 @@ The release demo must work offline after installation and permission grant. Live
 
 ## Current repository reality
 
-The current Flutter camera prototype is baseline material, not the target architecture:
+The production Android flow is assembled in `lib/main.dart` and opens local
+SQLite before showing Explore. The inherited camera prototype remains under
+`lib/screens/` as unused baseline source.
 
-- The Questory package/application identity migration is complete; inherited camera-screen debt remains.
-- Photo history is an in-memory global list of temporary paths.
-- Permission and camera failures are not represented safely.
-- UI, business logic, and state are mixed.
-- The generated test does not describe Questory.
-- API 24 is not explicitly enforced.
-- Flutter is not currently on this machine's `PATH`.
+- The Questory package/application identity migration is complete.
+- Android minimum SDK 24 is explicitly enforced.
+- Real repositories, location tracking, quest camera, History, and Story Studio
+  are connected through `AppDependencies`.
+- Windows and web are not supported by the production entry point because its
+  SQLite factory is mobile-only. The standalone Story Studio demo remains
+  available for browser testing.
+- Flutter is installed on this machine but may not be on `PATH`; use the SDK
+  path or the setup guidance in `README.md`.
 
 Do not preserve baseline design merely because it exists. Preserve the MIT attribution in `LICENSE` and never erase unrelated user work.
 
@@ -220,40 +224,12 @@ Before adding a package, verify Dart/Flutter and API 24 support, maintenance, li
 
 Pin dependencies with `pubspec.lock` for reproducible application builds. Revisit the baseline `.gitignore`, which currently excludes that lockfile.
 
-## Code-Graph-RAG
-
-Code-Graph-RAG is optional agent infrastructure. It supplements this document; it does not replace contracts, tests, or direct source inspection.
-
-Prerequisites: Python 3.12+, Docker, CMake, ripgrep, `uv`, and a supported model provider or local model. This machine currently has all listed system prerequisites except `uv`.
-
-Install outside the Flutter application source:
-
-```shell
-uv tool install "code-graph-rag[treesitter-full,semantic]"
-cgr daemon up
-cgr start --repo-path . --update-graph
-cgr start --repo-path .
-```
-
-For MCP, use the server command documented by Code-Graph-RAG and set `TARGET_REPO_PATH` to the absolute checkout. Provider endpoints and keys belong in private environment/client configuration.
-
-When available:
-
-1. Update the graph incrementally before trusting it.
-2. Use semantic search for intent and graph queries for relationships.
-3. Confirm retrieved code in the working tree; indexes may be stale.
-4. Preview structural replacements and inspect diffs.
-5. Never delete projects or wipe the database during routine work.
-6. If unavailable, continue with source search, fixtures, and tests.
-
-Never commit `.env`, provider keys, Memgraph/Qdrant data, indexes, logs, or graph exports unless the team explicitly approves a small reviewed artifact.
-
 ## Git collaboration
 
 - Preserve each member's visible commit history.
 - Use focused commits describing behavior.
 - Do not mix unrelated formatting and feature changes.
-- Never commit secrets, caches, build output, graph data, or private tracks.
+- Never commit secrets, caches, build output, or private tracks.
 - Never rewrite shared history or discard another person's changes.
 - Agree on shared contracts before resolving implementation conflicts.
 - Keep the main branch buildable after the initial migration.

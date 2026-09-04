@@ -34,3 +34,19 @@ doc/api/
 
 # Widget Preview related
 .widget_preview/
+
+# Temporary files (mostly images of reports for visual QA)
+tmp/
+.gradle-tmp/
+submission/
+*.hprof
+
+# LaTeX build intermediates; keep report/report.pdf.
+report/*.aux
+report/*.fdb_latexmk
+report/*.fls
+report/*.log
+report/*.out
+report/*.toc
+report/*.xdv
+report/*.synctex.gz

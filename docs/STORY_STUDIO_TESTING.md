@@ -1,9 +1,9 @@
 # Story Studio testing guide
 
-This guide tests Nguyen Dinh Thien Loc's Story Studio and export module through
-the connected Questory demo journey. The demo uses the bundled Nha Trang run
-fixture and one app-scoped in-memory story repository, so unfinished tracking
-or durable persistence cannot block the presentation.
+This guide covers both the Story Studio module in isolation and its integration
+with the production Android flow. Keep the two entry points separate: the
+production app uses real SQLite-backed data, while the standalone editor uses
+sample run data and an in-memory repository.
 
 ## Prerequisites
 
@@ -36,30 +36,35 @@ To run only this module's tests:
 flutter test test/features/story_studio
 ```
 
-## Launch the connected demo
+## Launch the production Android flow
 
-List available targets, then run the normal Questory entry point:
+List available targets, then run the normal Questory entry point on Android:
 
 ```shell
 flutter devices
-flutter run -d <device-id>
+flutter run -d <android-device-id>
 ```
 
-For Edge:
+Follow `Explore → city → Route Details or Free Run → Run Tracker → Run Summary
+→ Create Story`. You can also reopen completed runs and editable projects from
+the `Journey` destination.
+
+Do not run `lib/main.dart` on Edge or Windows. Production startup opens
+`sqflite`, whose factory is not configured for those targets. The resulting
+`databaseFactory not initialized` screen is a platform mismatch, not a server
+or user-flow requirement.
+
+## Launch the standalone editor
+
+When only Story Studio is needed, use its development entry point. Edge
+downloads the PNG; Android opens the native share sheet.
 
 ```shell
-flutter run -d edge
+flutter run -d edge -t lib/features/story_studio/story_studio_demo.dart
 ```
 
-Follow `Explore → View run recap → Create story`. You can also enter through the
-Studio or Runs bottom-navigation destinations. Edge downloads the exported PNG;
-Android opens the native share sheet.
-
-The focused development entry point remains available when only the editor is
-needed:
-
 ```shell
-flutter run -d <device-id> -t lib/features/story_studio/story_studio_demo.dart
+flutter run -d <android-device-id> -t lib/features/story_studio/story_studio_demo.dart
 ```
 
 ## Manual editor checklist
@@ -101,18 +106,17 @@ them through a read-only `FileProvider` grant to the selected receiving app.
 
 ## Edge export
 
-1. Run the connected demo with `flutter run -d edge`.
-2. Open the completed run and enter Story Studio.
-3. Make a visible edit and select `EXPORT`.
-4. Confirm Edge downloads a PNG and the editor reports
+1. Run the standalone editor with
+   `flutter run -d edge -t lib/features/story_studio/story_studio_demo.dart`.
+2. Make a visible edit and select `EXPORT`.
+3. Confirm Edge downloads a PNG and the editor reports
    `Export ready: 1080 x 1920 PNG downloaded.`
-5. Open the downloaded image and confirm its size is 1080 x 1920 with no editor
+4. Open the downloaded image and confirm its size is 1080 x 1920 with no editor
    controls.
 
 Edge DevTools changes viewport size and touch emulation but does not create a
-camera device. Questory's demo fixture already contains deterministic photo
-evidence, so the Story Studio presentation never depends on browser camera
-availability.
+camera device. The standalone editor's sample run avoids any camera or GPS
+dependency.
 
 ## Offline and failure checks
 
@@ -126,10 +130,11 @@ availability.
 
 ## Current integration boundary
 
-The main app now uses fixture data and an app-scoped in-memory repository for a
-complete presentation flow. Connecting a newly recorded real run, real camera
-evidence, durable story storage across process restarts, and final team-owned
-navigation remains tracked separately in `TODO.md`.
+The production Android app connects recorded runs, retained camera evidence,
+SQLite-backed History, achievements, and durable Story Studio projects. The
+standalone editor intentionally remains fixture-driven so the editor can be
+tested without an Android device. Optional Supabase sharing is unrelated to
+local story creation and is never required before startup.
 
 If Gradle reports `Unable to establish loopback connection`, Android compilation
 is being blocked by the host environment before Kotlin compilation begins. Try a

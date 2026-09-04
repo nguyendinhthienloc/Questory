@@ -32,7 +32,26 @@ ThemeData buildQuestoryTheme() {
         backgroundColor: QuestoryColors.ink,
         foregroundColor: QuestoryColors.white,
         minimumSize: const Size(48, 52),
-        textStyle: const TextStyle(fontWeight: FontWeight.w700),
+        textStyle: const TextStyle(
+          fontFamily: 'Noto Sans',
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        textStyle: const TextStyle(
+          fontFamily: 'Noto Sans',
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        textStyle: const TextStyle(
+          fontFamily: 'Noto Sans',
+          fontWeight: FontWeight.w700,
+        ),
       ),
     ),
     useMaterial3: true,

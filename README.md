@@ -10,9 +10,18 @@ This is the final project for **TT2526HK3_CS426_24A - Android Mobile Development
 
 ## Status
 
-The complete offline MVP is now connected: Explore, two bundled city packs, route details, free-run discovery, foreground GPS tracking, location-aware photo quests, retained photos, SQLite history, achievements, Run Summary, Story Studio, exact-size PNG export, and Android sharing. The inherited camera prototype remains only as unused baseline source; app startup now opens Questory's Explore screen.
+The Android offline MVP is connected: Explore, two bundled city packs, route details, free-run discovery, foreground-capable GPS tracking, location-aware photo quests, retained photos, SQLite history, achievements, Run Summary, Story Studio, exact-size PNG export, and Android sharing. The inherited camera prototype remains only as unused baseline source; the production entry point is `lib/main.dart`.
 
-Local verification through 3 September 2026 used Flutter 3.47.2 and Dart 3.13.2. All 53 combined tests passed and `flutter analyze` reported no issues. The suite includes file-backed SQLite restart and deletion-isolation coverage for runs, GPS points, evidence, stories, and achievements. Debug and privately signed release APKs built successfully; the release APK passed v2 signature verification, installed and launched on a clean API 24+ Android emulator, and retained offline run, achievement, and story data after an airplane-mode app restart. Smoke testing covered Explore, both city cards, Route Details, Free Run discovery, Run Tracker, permission recovery, camera capture with captions, PNG export, and the Android share sheet. A real foreground GPS session and testing on an exact API 24 system image still require hands-on verification.
+The final automated review on 5 September 2026 used Flutter 3.44.8 and Dart
+3.12.2. All 62 tests passed, `flutter analyze` reported no issues, and the
+privately signed release APK passed signature and manifest verification. A
+debug web build also compiled, but that does not make the production app
+web-compatible: `lib/main.dart` opens the mobile SQLite database during
+startup, so the complete app must currently be run on Android. Earlier Android
+verification recorded a release APK installing and launching on an API 24+
+emulator and retaining local data after an airplane-mode restart. A real
+foreground GPS session and testing on an exact API 24 system image still
+require hands-on verification.
 
 ## Team and modular ownership
 
@@ -102,7 +111,9 @@ Questory uses a colorful film-and-sticker travel-journal style:
 - Retained photos are copied from temporary camera paths to app storage.
 - Network adapters never block local saving.
 - Online route sharing is opt-in and disabled unless Supabase build defines are
-  provided; local photo paths are never uploaded.
+  provided. A confirmation explains that route coordinates, run time,
+  captions, and evidence photos will be uploaded; local filesystem paths are
+  never sent.
 - The offline demo uses bundled stylized city data and a recorded polyline, not live map tiles.
 - Local data is the source of truth; synchronization is not an MVP requirement.
 
@@ -132,36 +143,78 @@ Technology direction: Flutter/Dart, Android API 24+, SQLite-based local persiste
 
 ## Build and run
 
-Prerequisites are Flutter, Android SDK, and an API 24+ device or emulator.
+The production app targets Android API 24 or newer. It does not require a
+backend: destination packs, runs, photos, achievements, and stories are local.
+Supabase is used only when the optional online-sharing build defines are
+provided.
+
+Prerequisites are Flutter, the Android SDK, and a running API 24+ Android
+device or emulator.
 
 Story Studio contributors can test the module independently with the
 [Story Studio testing guide](docs/STORY_STUDIO_TESTING.md).
 The connected demo journey is drawn in [USER_FLOW.md](docs/USER_FLOW.md).
+Use the [pre-demo checklist](docs/PRE_DEMO_CHECKLIST.md) for the complete
+Android smoke test, optional server setup, screenshots, and submission freeze.
 
 ```shell
 flutter pub get
 flutter analyze
 flutter test
-flutter run
-flutter run -d edge
+flutter devices
+flutter run -d <android-device-id>
 flutter build apk --release
 ```
+
+On a machine with no connected Android target, `flutter devices` may list only
+Windows and browsers. Do not choose those targets for `lib/main.dart`: its
+SQLite startup path is mobile-only. Start an emulator or connect a phone with
+USB debugging, confirm it appears in `flutter devices`, and then pass that
+Android device ID explicitly.
+
+The platform-independent Story Studio sample can still be run in Edge:
+
+```shell
+flutter run -d edge -t lib/features/story_studio/story_studio_demo.dart
+```
+
+If the screen says `databaseFactory not initialized`, the app was launched on
+an unsupported desktop or browser target. Retrying cannot fix that target
+mismatch. No server needs to be started; select an Android device instead.
+
+To include the optional online route-sharing feature, follow
+[ONLINE_SHARING.md](docs/ONLINE_SHARING.md). The recommended filming setup uses
+a hosted Supabase project over HTTPS. Local Supabase is also documented for
+development, but it is not required for the graded offline journey.
 
 Release builds require a private upload keystore. Copy
 `android/key.properties.example` to the ignored `android/key.properties`, set
 the absolute keystore path and private credentials, and keep both files outside
 Git. Gradle intentionally refuses to create a release build when signing is not
 configured instead of silently signing a release artifact with the debug key.
+The current machine is already configured; see
+[RELEASE_SIGNING.md](docs/RELEASE_SIGNING.md) before moving or rebuilding the
+release on another computer.
 
-If Flutter is installed outside `PATH`, add your own Flutter SDK's `bin`
-directory to `PATH`, then use the same commands:
+If Gradle reports `Unable to establish loopback connection` on Windows, use a
+short writable temporary directory for that terminal, then rebuild:
 
-```shell
-export PATH="$PATH:/path/to/flutter/bin"
+```powershell
+New-Item -ItemType Directory -Path .gradle-tmp -Force | Out-Null
+$env:TEMP = (Resolve-Path .gradle-tmp).Path
+$env:TMP = $env:TEMP
+flutter build apk --release
+```
+
+If Flutter is installed outside `PATH`, add your Flutter SDK's `bin` directory
+to `PATH`, then use the same commands. For PowerShell:
+
+```powershell
+$env:Path += ";C:\path\to\flutter\bin"
 flutter run
 ```
 
-Verified APKs are generated at `build/app/outputs/flutter-apk/app-debug.apk` and `build/app/outputs/flutter-apk/app-release.apk`. The current release APK is signed with the debug key for local installation; configure the team's private release keystore before store distribution. Questory uses `sqflite` for a versioned local database, `path_provider` for app-controlled evidence photos, `geolocator` for foreground location updates, and `camera` for quest evidence. Database schema version 1 stores active checkpoints, completed summaries, editable story documents, and achievements. Future schema changes must increment the database version and add an `onUpgrade` migration rather than replacing user data.
+APKs are generated at `build/app/outputs/flutter-apk/app-debug.apk` and `build/app/outputs/flutter-apk/app-release.apk`. A release build must use the team's private upload keystore; never distribute a debug-signed artifact as the release package. Questory uses `sqflite` for a versioned local database, `path_provider` for app-controlled evidence photos, `geolocator` for foreground location updates, and `camera` for quest evidence. Database schema version 1 stores active checkpoints, completed summaries, editable story documents, and achievements. Future schema changes must increment the database version and add an `onUpgrade` migration rather than replacing user data.
 
 The first Android run may download the required SDK platform or CMake. The Java restricted-method and Kotlin Gradle Plugin messages currently shown by Gradle are migration warnings; they did not prevent the verified build.
 
@@ -171,10 +224,6 @@ license, offline, and bundled-asset notes.
 GitHub Actions runs on every push and pull request to `main`, and can also be started manually from the Actions page. It uses the committed `pubspec.lock`, rejects formatting changes in `lib/features/` and `test/`, fails on analyzer errors or warnings, runs the test suite with coverage, builds a debug APK, and retains that APK as a workflow artifact for 14 days.
 
 The inherited camera screens still contain informational lint notices. CI displays those notices but does not fail on them; new feature code should remain clean.
-
-## Agent context
-
-`AGENTS.md` is the durable source of engineering context. Code-Graph-RAG is optional supporting infrastructure for agents that can use MCP. It must be installed outside the app source; generated graph data and provider secrets are not committed.
 
 ## Requirements coverage
 
@@ -189,11 +238,16 @@ The inherited camera screens still contain informational lint notices. CI displa
 
 ## Submission placeholders
 
-- Demo video: `TBD`
+- Demo video: `DEMO_VIDEO_LINK_PLACEHOLDER`
 - Test credentials: not required for the offline MVP
 - APK: `apk/app-release.apk`
 - Report: `report/report.pdf`
 - Demo link: `video/demo-link.txt`
+
+After uploading the recording, put its public-view URL on the first line of
+`video/demo-link.txt`, then run `tools/package_submission.ps1`. The script
+validates the required files, inserts the same URL into the packaged README,
+excludes caches and secrets, and creates the correctly named ZIP.
 
 ## Provenance
 

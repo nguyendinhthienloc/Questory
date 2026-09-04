@@ -1,0 +1,89 @@
+\section{Setup, configuration, and installation}
+
+\subsection{Development prerequisites}
+The production application requires Flutter, an Android SDK, and either an
+Android emulator or a connected Android phone. Git and Java are provided by a
+normal Flutter Android toolchain. The optional local sharing server additionally
+requires a Docker-compatible runtime and the Supabase CLI. XeLaTeX and
+\code{latexmk} reproduce this report.
+
+From the repository root, verify the toolchain and dependencies:
+\begin{verbatim}
+C:\dev\flutter\bin\flutter.bat doctor -v
+C:\dev\flutter\bin\flutter.bat pub get
+C:\dev\flutter\bin\flutter.bat devices
+\end{verbatim}
+
+The device list must include an Android target. Start the complete application
+with that exact identifier:
+\begin{verbatim}
+C:\dev\flutter\bin\flutter.bat run -d <android-device-id>
+\end{verbatim}
+
+No command must run before \code{main.dart} other than starting the Android
+emulator or connecting the phone. In particular, a backend is not needed for
+Explore, routes, Free Run, GPS tracking, quests, camera evidence, History,
+achievements, Story Studio, PNG export, or the Android share sheet.
+
+\subsection{Automated checks and Android build}
+\begin{verbatim}
+C:\dev\flutter\bin\dart.bat format --output=none --set-exit-if-changed lib test
+C:\dev\flutter\bin\flutter.bat analyze
+C:\dev\flutter\bin\flutter.bat test
+C:\dev\flutter\bin\flutter.bat build apk --debug
+\end{verbatim}
+
+For the submission build, copy \path{android/key.properties.example} to the
+ignored \path{android/key.properties}. Use the private keystore path and
+credentials supplied to the team, then run:
+\begin{verbatim}
+C:\dev\flutter\bin\flutter.bat build apk --release
+\end{verbatim}
+The verified output is placed at \code{apk/app-release.apk}. Signing credentials
+and the private keystore are never committed or packaged.
+
+\subsection{Optional hosted sharing}
+Only anonymous route-link sharing needs a server. After linking a Supabase
+project, apply the migration, configure the function's server-side environment,
+and deploy the function:
+\begin{verbatim}
+supabase login
+supabase link --project-ref <project-ref>
+supabase db push
+supabase functions deploy share-run --no-verify-jwt
+\end{verbatim}
+
+Then pass only the public project URL and anonymous key to Flutter:
+\begin{verbatim}
+C:\dev\flutter\bin\flutter.bat run -d <android-device-id> `
+  --dart-define=SUPABASE_URL=https://<project-ref>.supabase.co `
+  --dart-define=SUPABASE_ANON_KEY=<public-anon-key>
+\end{verbatim}
+
+\subsection{Optional local sharing server}
+For local function development, initialize once if the \code{supabase} directory
+does not exist, start the local stack, apply the migration, and serve the
+function:
+\begin{verbatim}
+supabase init
+supabase start
+supabase db reset --local
+supabase functions serve share-run --no-verify-jwt
+supabase status
+\end{verbatim}
+
+On the standard Android emulator, use
+\code{http://10.0.2.2:54321} as \code{SUPABASE_URL}; a physical phone must use the
+development computer's reachable LAN address. Cleartext HTTP is allowed only in
+the debug Android manifest for this local workflow. Stop local services with
+\code{supabase stop}. Hosted deployment remains the appropriate way to show a
+link that another device can open.
+
+\subsection{Focused browser harness}
+Story Studio can be reviewed independently in a browser with:
+\begin{verbatim}
+C:\dev\flutter\bin\flutter.bat run -d edge `
+  -t lib/features/story_studio/story_studio_demo.dart
+\end{verbatim}
+This is a development harness for the editor only. It does not represent the
+complete production application or its SQLite/GPS/camera startup path.

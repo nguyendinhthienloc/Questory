@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'app/app_dependencies.dart';
 import 'app/main_navigation.dart';
+import 'app/questory_theme.dart';
 import 'features/destinations/presentation/explore_screen.dart';
+
+typedef DependencyLoader = Future<AppDependencies> Function();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,14 +13,25 @@ void main() {
 }
 
 class QuestoryBootstrap extends StatefulWidget {
-  const QuestoryBootstrap({super.key});
+  const QuestoryBootstrap({super.key, this.loadDependencies});
+
+  final DependencyLoader? loadDependencies;
 
   @override
   State<QuestoryBootstrap> createState() => _QuestoryBootstrapState();
 }
 
 class _QuestoryBootstrapState extends State<QuestoryBootstrap> {
-  late Future<AppDependencies> _dependencies = AppDependencies.create();
+  late Future<AppDependencies> _dependencies;
+
+  @override
+  void initState() {
+    super.initState();
+    _dependencies = _loadDependencies();
+  }
+
+  Future<AppDependencies> _loadDependencies() =>
+      (widget.loadDependencies ?? AppDependencies.create)();
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +45,9 @@ class _QuestoryBootstrapState extends State<QuestoryBootstrap> {
           return QuestoryApp(
             home: _StartupError(
               message: '${snapshot.error}',
-              onRetry: () => setState(
-                () => _dependencies = AppDependencies.create(),
-              ),
+              onRetry: () => setState(() {
+                _dependencies = _loadDependencies();
+              }),
             ),
           );
         }
@@ -55,14 +69,7 @@ class QuestoryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Questory',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Noto Sans',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0B7A75),
-          surface: QuestoryColors.paper,
-        ),
-        useMaterial3: true,
-      ),
+      theme: buildQuestoryTheme(),
       home: home ??
           (dependencies == null
               ? const ExploreScreen()

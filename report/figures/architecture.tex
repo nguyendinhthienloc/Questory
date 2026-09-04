@@ -1,0 +1,17 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  layer/.style={draw=QuestInk,rounded corners=2mm,minimum width=0.88\textwidth,
+    minimum height=13mm,align=center,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,color=QuestTeal},node distance=5mm]
+  \node[layer,fill=QuestCoral!18] (ui) {Presentation: Explore, Tracker, Camera, Summary, Journey, Story Studio};
+  \node[layer,fill=QuestYellow!22,below=of ui] (app) {Application: run lifecycle, quest evaluation, achievements, story editing and export};
+  \node[layer,fill=QuestTeal!14,below=of app] (domain) {Domain and contracts: immutable models plus repository/device interfaces};
+  \node[layer,fill=QuestPaper,below=of domain] (data) {Adapters: bundled JSON, SQLite, GPS, camera/files, PNG renderer, Android share, optional Supabase};
+  \draw[arr] (ui) -- (app);
+  \draw[arr] (app) -- (domain);
+  \draw[arr] (data) -- (domain);
+\end{tikzpicture}
+\caption{Layered dependency direction. Data adapters implement contracts; domain code does not depend on plugins.}
+\end{figure}
+

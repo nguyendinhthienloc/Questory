@@ -5,16 +5,16 @@ import '../core/fixtures/fake_story_services.dart';
 import 'presentation/questory_demo_shell.dart';
 import 'questory_theme.dart';
 
-class QuestoryApp extends StatefulWidget {
-  const QuestoryApp({super.key, this.storyRepository});
+class QuestoryStoryDemoApp extends StatefulWidget {
+  const QuestoryStoryDemoApp({super.key, this.storyRepository});
 
   final StoryRepository? storyRepository;
 
   @override
-  State<QuestoryApp> createState() => _QuestoryAppState();
+  State<QuestoryStoryDemoApp> createState() => _QuestoryStoryDemoAppState();
 }
 
-class _QuestoryAppState extends State<QuestoryApp> {
+class _QuestoryStoryDemoAppState extends State<QuestoryStoryDemoApp> {
   late final StoryRepository _storyRepository;
 
   @override

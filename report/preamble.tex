@@ -1,0 +1,49 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=22mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+\definecolor{QuestTeal}{HTML}{087F7A}
+\definecolor{QuestCoral}{HTML}{FF7867}
+\definecolor{QuestYellow}{HTML}{F4C95D}
+\definecolor{QuestInk}{HTML}{19201E}
+\definecolor{QuestPaper}{HTML}{F7F0E3}
+\definecolor{QuestGreen}{HTML}{2E7D5B}
+\hypersetup{colorlinks=true,linkcolor=QuestTeal,urlcolor=QuestTeal,
+  pdftitle={Questory Final Project Report},pdfauthor={Questory Team}}
+\setlist[itemize]{leftmargin=6mm,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=7mm,itemsep=2pt,topsep=3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.18}
+\titleformat{\section}{\Large\bfseries\color{QuestTeal}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries\color{QuestInk}}{\thesubsection}{0.6em}{}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textbf{Questory}}
+\rhead{Final Project Report}
+\cfoot{\thepage}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\status}[1]{\textbf{\color{QuestGreen}#1}}
+\newcommand{\appscreenshot}[3]{%
+  \begin{figure}[htbp]
+    \centering
+    \IfFileExists{#1}{\includegraphics[height=#2,keepaspectratio]{#1}}{%
+      \fbox{\parbox[c][#2][c]{0.48\textwidth}{\centering Screenshot generated from the Flutter interface}}}
+    \caption{#3}
+  \end{figure}}

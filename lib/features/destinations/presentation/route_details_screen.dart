@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/domain/destination_models.dart';
 import '../../../core/domain/run_models.dart';
-import 'explore_screen.dart';
 
 class RouteDetailsScreen extends StatelessWidget {
   const RouteDetailsScreen({
@@ -14,7 +14,7 @@ class RouteDetailsScreen extends StatelessWidget {
 
   final DestinationPack pack;
   final RoutePlan route;
-  final StartRouteCallback? onStart;
+  final void Function(DestinationPack pack, RoutePlan route)? onStart;
 
   @override
   Widget build(BuildContext context) {

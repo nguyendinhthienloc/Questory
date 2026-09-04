@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/contracts/live_share_service.dart';
 import '../../../core/contracts/share_service.dart';
 import '../../../core/contracts/story_repository.dart';
 import '../../../core/domain/achievement.dart';
 import '../../../core/domain/run_models.dart';
-import '../../destinations/presentation/explore_screen.dart';
 import '../../story_studio/presentation/story_studio_screen.dart';
 
 class RunSummaryScreen extends StatelessWidget {
@@ -244,6 +244,31 @@ class _ShareRouteButtonState extends State<_ShareRouteButton> {
   bool _sharing = false;
 
   Future<void> _share() async {
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Share this route online?'),
+        content: const Text(
+          'This uploads your route coordinates, run time, quest captions, '
+          'and evidence photos. Anyone with the private link can view it for '
+          '24 hours.',
+        ),
+        actions: [
+          TextButton(
+            key: const ValueKey('cancel-online-share'),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('CANCEL'),
+          ),
+          FilledButton(
+            key: const ValueKey('confirm-online-share'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('SHARE'),
+          ),
+        ],
+      ),
+    );
+    if (approved != true || !mounted) return;
+
     setState(() => _sharing = true);
     try {
       final link = await widget.service.createShare(widget.summary);

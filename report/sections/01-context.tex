@@ -1,0 +1,60 @@
+\section{Project context and objectives}
+
+\subsection{Background}
+Running applications are effective at measuring distance and pace, while travel
+applications are effective at describing places. These experiences are usually
+separate: a run becomes a graph with little cultural meaning, and a destination
+guide rarely turns exploration into an active, personal challenge. Questory
+connects the two. Movement provides the structure, landmarks provide motivation,
+and photographs become evidence and material for a visual diary.
+
+The product was designed for an academic mobile-development project, but its
+scope is intentionally closer to a complete small application than a screen
+prototype. It has persistent local data, real location and camera integrations,
+error and permission states, navigation across the full journey, deterministic
+content, an editable export workflow, and an optional online extension.
+
+\subsection{Target users}
+\begin{itemize}
+  \item recreational runners who want a motivating route without performance
+        pressure or a public leaderboard;
+  \item visitors who prefer active exploration and need useful content even when
+        mobile data is weak or unavailable;
+  \item local residents who want a creative record of familiar places;
+  \item privacy-conscious users who do not want an account for basic use; and
+  \item student evaluators who need a repeatable, inspectable end-to-end flow.
+\end{itemize}
+
+\subsection{Problem statement}
+The core problem is to record a credible run while helping the user notice the
+city and leave with something more expressive than a route screenshot. The
+solution must tolerate permission denial, disabled GPS, noisy points, temporary
+camera files, process interruption, missing network access, and image-export
+failure without losing the user's local activity.
+
+\subsection{Objectives and design principles}
+Questory's objectives are to provide useful bundled routes for two Vietnamese
+cities, support both structured and self-directed running, evaluate proximity
+quests fairly, preserve unfinished and completed work locally, and export a
+shareable portrait artifact. Five principles shaped the implementation:
+
+\begin{enumerate}
+  \item \textbf{Offline is the default.} Network access cannot be a prerequisite
+        for opening the app, recording, finishing, reviewing, or exporting.
+  \item \textbf{User action controls sensors.} Tracking begins only after an
+        explicit explanation and confirmation.
+  \item \textbf{State is recoverable.} Active runs are checkpointed and retained
+        photos move into application-controlled storage.
+  \item \textbf{The output remains editable.} Story Studio saves a serializable
+        document rather than only a rendered image.
+  \item \textbf{Optional systems remain optional.} Remote sharing is behind an
+        interface and disappears gracefully when not configured.
+\end{enumerate}
+
+\subsection{Originality and scope}
+Questory's distinctive element is the complete loop from place discovery to
+physical activity, evidence capture, personal achievement, and editable visual
+story. It is not a map viewer with decorative screens and not a camera gallery
+with a running label. The route, GPS track, quest evidence, summary, and story
+document share stable identities and survive navigation and application restart.
+

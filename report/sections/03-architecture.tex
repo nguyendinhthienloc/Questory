@@ -1,0 +1,40 @@
+\section{Architecture and domain design}
+
+\subsection{Layered structure}
+Questory uses feature-first modules with a shared domain and contract layer. The
+presentation layer depends on domain models and interfaces. Application classes
+coordinate state transitions and calculations. Data adapters implement SQLite,
+bundled JSON, filesystem, GPS, camera, export, Android sharing, and optional
+Supabase behavior. Dependency assembly occurs once at application startup.
+
+\input{figures/architecture}
+
+This separation prevents the interface from opening databases or manipulating
+files directly. It also lets widget and application tests replace device services
+with deterministic fakes. Optional networking cannot change the outcome of a
+local run because it is represented by a nullable contract implementation rather
+than embedded in the core model.
+
+\subsection{Shared domain language}
+\input{tables/domain-model}
+
+Stable string identifiers connect records without exposing database row numbers.
+Timestamps are stored in UTC and displayed in local time. Distances stay in
+meters until presentation. Models serialize to plain maps and lists so the
+database and tests can round-trip them without widget dependencies.
+
+\subsection{Dependency assembly}
+The production entry point first initializes Flutter, then opens the local
+database and constructs repositories and platform services. Only after this
+future succeeds does it render the main navigation. Startup loading and failure
+screens prevent a partially initialized UI. Supabase URL and anonymous key are
+read from compile-time definitions; when either is absent, the live-share service
+is simply unavailable and the complete offline application continues normally.
+
+\subsection{Offline-first boundary}
+The local path includes bundled destination content, SQLite records, application-
+controlled photos, metrics, achievements, Story Studio documents, export, and
+the Android share sheet. The remote path contains only anonymous route sharing.
+This boundary is architectural rather than cosmetic: a network failure cannot
+roll back or invalidate local state.
+

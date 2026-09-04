@@ -86,10 +86,11 @@ class RunTrackerController extends ChangeNotifier {
             : 'Location permission was denied. Questory will not start tracking.',
       );
     }
+    final activeStartedAt = _clock.nowUtc();
     _session = _session!.copyWith(
       lifecycle: RunLifecycle.active,
-      activeSegmentStartedAtUtc: now,
-      updatedAtUtc: now,
+      activeSegmentStartedAtUtc: activeStartedAt,
+      updatedAtUtc: activeStartedAt,
       errorMessage: null,
     );
     if (!await _saveCheckpoint()) return;

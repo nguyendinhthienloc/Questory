@@ -1,0 +1,56 @@
+\section{Implementation and technology choices}
+
+\subsection{Technology stack}
+\input{tables/technology-stack}
+
+Flutter provides one strongly typed UI and domain codebase while retaining
+Android device integration. Material 3 supplies accessible interaction
+primitives, but the final surfaces use a custom solid-color identity. No large
+state-management framework was introduced; feature controllers and immutable
+snapshots keep the dependency surface small and inspectable.
+
+\subsection{Local persistence and recovery}
+SQLite is opened through a small database class with an explicit schema version.
+Repositories serialize active sessions, summaries, story documents, and
+achievements. Destination content stays in versioned JSON because it is bundled,
+reviewable, and deterministic. Photos are files because large binary payloads do
+not belong in normal relational rows.
+
+The active run is checkpointed incrementally after meaningful state changes.
+When the application restarts, the main navigation checks for a checkpoint and
+offers Resume or Discard. Repository operations expose failures to presentation
+as recoverable states rather than allowing uncaught initialization or storage
+exceptions to leave a blank screen.
+
+\subsection{Consistency during deletion}
+Deleting a run is a cascade across story documents, the run summary, and retained
+photos. The orchestration removes related editable stories first, attempts the
+run deletion, restores stories if that record operation fails, and performs file
+cleanup only after repository state is consistent. Photo-cleanup failure is
+reported separately because the user record has already been deleted.
+
+\subsection{Optional online sharing}
+Anonymous link sharing is implemented behind \code{LiveShareService}. The client
+sends a deliberately limited payload to a Supabase Edge Function; the function
+validates the request, stores an expiring record, and returns a share URL. The
+anonymous application key may be compiled into the client, but the service-role
+key remains only in the function environment. Core operation never waits for
+this server. Before uploading, the UI names the shared coordinates, run time,
+captions, and evidence photos and requires explicit confirmation.
+
+There are three valid run modes:
+\begin{itemize}
+  \item \textbf{Offline production mode:} no server and no remote definitions;
+  \item \textbf{Hosted sharing mode:} a deployed Supabase project and function;
+  \item \textbf{Local sharing development:} Supabase CLI plus a Docker-compatible
+        runtime, with the Android emulator addressing the host at
+        \code{10.0.2.2} rather than \code{localhost}.
+\end{itemize}
+
+\subsection{Platform scope}
+The release target is Android API 24 or later. The production entry point opens a
+mobile SQLite database and therefore must be run on an Android device or
+emulator. A browser entry point exists only as a focused Story Studio development
+harness. This distinction explains the reported \code{databaseFactory not
+initialized} screen on Windows/Edge: the wrong platform was selected before any
+normal user-flow screen could load. It is not evidence that a backend is missing.

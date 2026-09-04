@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/contracts/clock.dart';
 import '../../../core/contracts/photo_store.dart';
 import '../../../core/domain/destination_models.dart';
 import '../../../core/domain/run_models.dart';
-import '../../destinations/presentation/explore_screen.dart';
 
 class QuestCameraScreen extends StatefulWidget {
   const QuestCameraScreen({
@@ -76,18 +76,24 @@ class _QuestCameraScreenState extends State<QuestCameraScreen> {
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized || _busy) return;
     setState(() => _busy = true);
+    XFile? capture;
+    String? retainedPath;
     try {
-      final capture = await controller.takePicture();
+      capture = await controller.takePicture();
       if (!mounted) return;
       final caption = await _requestCaption(capture.path);
       if (caption == null || !mounted) return;
       final now = widget.clock.nowUtc();
       final evidenceId = 'evidence-${now.microsecondsSinceEpoch}';
-      final retainedPath = await widget.photoStore.retain(
+      retainedPath = await widget.photoStore.retain(
         temporaryPath: capture.path,
         evidenceId: evidenceId,
       );
-      if (!mounted) return;
+      if (!mounted) {
+        await _deleteRetainedPhoto(retainedPath);
+        retainedPath = null;
+        return;
+      }
       Navigator.pop(
         context,
         QuestEvidence(
@@ -99,6 +105,7 @@ class _QuestCameraScreenState extends State<QuestCameraScreen> {
           caption: caption,
         ),
       );
+      retainedPath = null;
     } catch (error) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +113,26 @@ class _QuestCameraScreenState extends State<QuestCameraScreen> {
         );
       }
     } finally {
+      if (capture != null) await _deleteTemporaryPhoto(capture.path);
+      if (retainedPath != null) await _deleteRetainedPhoto(retainedPath);
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _deleteTemporaryPhoto(String path) async {
+    try {
+      final file = File(path);
+      if (await file.exists()) await file.delete();
+    } catch (_) {
+      // Camera cache cleanup must not hide the capture result or error state.
+    }
+  }
+
+  Future<void> _deleteRetainedPhoto(String path) async {
+    try {
+      await widget.photoStore.delete(path);
+    } catch (_) {
+      // The screen is already closing; later storage maintenance may retry.
     }
   }
 

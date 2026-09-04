@@ -1,40 +1,65 @@
-# Questory demo user flow
+# Questory production user flow
 
-The release demo starts with Questory rather than the inherited camera screen.
-It uses a completed offline run fixture so Story Studio can be demonstrated even
-when GPS, camera hardware, or another team module is unavailable.
+The production entry point is `lib/main.dart`. It assembles the real local
+repositories, opens SQLite, and then shows the Android application. The core
+journey works offline and does not wait for Supabase or any other backend.
 
 ```mermaid
 flowchart TD
-    A[Launch Questory] --> B[Explore]
-    B --> C[Open completed Nha Trang run]
-    C --> D[Run recap]
-    D --> E[Review route, metrics, quests, and photo evidence]
-    E --> F[Create story]
-    F --> G[Story Studio]
-    G --> H[Choose a template]
-    H --> I[Edit text, photos, crop, colors, transforms, and layers]
-    I --> J[Save editable draft]
-    I --> K[Export 1080 x 1920 PNG]
-    K --> L{Platform}
-    L -->|Edge or web| M[Download PNG]
-    L -->|Android| N[Open Android share sheet]
-    B --> O[Studio tab]
-    O --> G
-    B --> P[Runs tab]
-    P --> D
-    J --> O
+    A[Launch Questory on Android] --> B[Open local SQLite]
+    B --> C{Saved active run?}
+    C -->|Yes| D[Resume or discard checkpoint]
+    C -->|No| E[Explore]
+    D -->|Resume| H[Run Tracker]
+    D -->|Discard| E
+    E --> F[Choose Nha Trang or Ho Chi Minh City]
+    F --> G{Run mode}
+    G -->|Curated route| I[Route Details]
+    G -->|Free run| J[Free Run discovery]
+    I --> H
+    J --> H
+    H --> K[Start after location explanation and permission]
+    K --> L[Record route, time, distance, pace, and checkpoints]
+    L --> M[Complete, skip, or use fallback for photo quests]
+    M --> N[Quest Camera and caption]
+    N --> L
+    L --> O[Finish and save Run Summary]
+    O --> P[Run Summary]
+    P --> Q[Create or edit Story]
+    Q --> R[Story Studio]
+    R --> S[Save editable project]
+    R --> T[Export 1080 x 1920 PNG]
+    T --> U[Android share sheet]
+    E --> V[Journey]
+    V --> W[Saved runs, stories, and achievements]
+    W --> P
+    W --> R
 ```
 
-## Demo boundary
+## Startup and platform boundary
 
-- Explore, Runs, and Run recap are fixture-driven navigation surfaces.
-- Story Studio, document editing, save/reopen, rendering, and export are the
-  real Story Studio implementation.
-- The app-scoped fake repository acts as the mock backend for the current app
-  session and returns cloned serialized documents.
-- Edge DevTools does not emulate camera hardware. The demo run already contains
-  deterministic quest evidence, so camera availability never blocks the Story
-  Studio demonstration.
-- Real camera evidence, GPS tracking, durable storage, and release navigation
-  remain replaceable integration adapters owned by their respective modules.
+- `lib/main.dart` currently supports the Android release flow. It opens the
+  `sqflite` database before `MainNavigation` is created.
+- A `databaseFactory not initialized` screen means the production entry point
+  was launched on Windows or in a browser, where this database factory is not
+  configured. It is not a missing backend and retrying on the same target will
+  return the same error.
+- Start or connect an API 24+ Android target, confirm its ID with
+  `flutter devices`, and run `flutter run -d <android-device-id>`.
+- Supabase is optional. Without `SUPABASE_URL` and `SUPABASE_ANON_KEY`, the
+  online route-sharing button is hidden and the complete local flow remains
+  available.
+
+## Development-only Story Studio demo
+
+The repository also contains an isolated, fixture-driven editor at
+`lib/features/story_studio/story_studio_demo.dart`. It is useful when no
+Android target is connected and can run in Edge:
+
+```shell
+flutter run -d edge -t lib/features/story_studio/story_studio_demo.dart
+```
+
+That command opens Story Studio directly with sample run data and an in-memory
+story repository. It does not exercise production startup, SQLite persistence,
+GPS tracking, the quest camera, History, or Android sharing.

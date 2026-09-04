@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/questory_theme.dart';
 import '../../../core/domain/destination_models.dart';
-import 'explore_screen.dart';
 
 class FreeRunDiscoveryScreen extends StatelessWidget {
   const FreeRunDiscoveryScreen({

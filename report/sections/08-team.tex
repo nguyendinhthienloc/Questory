@@ -1,0 +1,42 @@
+\section{Team organization and development process}
+
+\subsection{Division of work}
+\input{tables/team-contributions}
+
+Nguyen Dinh Thien Loc served as the team leader. In addition to owning Story
+Studio and export, Loc coordinated the shared product direction, aligned work at
+integration points, reviewed release readiness, and organized the final report
+and demonstration build. Leadership was collaborative: module owners retained
+responsibility for their deliverables, while cross-module decisions were made
+against the same offline-first architecture and acceptance criteria.
+
+The repository history contains commits attributed to all four members. Module
+ownership identifies responsibility rather than exclusive access: each member
+could review other modules, while changes to domain contracts, dependency
+configuration, manifests, navigation, and the package specification were treated
+as integration hotspots.
+
+\subsection{Collaboration method}
+Work was divided against interfaces so a feature did not need to wait for a
+database, device, or another unfinished screen. Every principal contract has a
+deterministic fake. This made it possible to develop and test routes, tracking,
+Story Studio, History, and optional sharing independently before integration.
+
+The shared engineering contract required contributors to inspect existing work,
+preserve unrelated changes, use stable domain language, keep remote behavior
+optional, format changed code, run proportionate tests, and state verification
+limits. Suggested feature branches and focused commits preserved visible member
+history. Secrets, private tracks, build caches, database files, and generated
+indexes were excluded from source control.
+
+\subsection{Integration decisions}
+The team selected immutable shared models before creating feature variants.
+Presentation depends on contracts, while SQLite and device plugins remain data
+adapters. Destination content is supplied through a repository contract;
+tracking persists through the run contract; Story Studio consumes a completed
+run summary; and History combines the repositories through dependency assembly.
+
+This approach reduced merge coupling and made failure behavior testable. It also
+made architectural debt visible: cross-feature navigation and shared visual
+constants are integration responsibilities, not reasons for one feature to reach
+into another feature's private implementation.

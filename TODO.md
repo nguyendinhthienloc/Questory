@@ -14,7 +14,6 @@ Legend: `[ ]` not started, `[-]` in progress, `[x]` verified, `[!]` blocked.
 - Colorful film/sticker style with solid colors and no gradients
 - No account required; Android export and sharing
 - Personal achievements rather than a public leaderboard
-- Code-Graph-RAG configuration included but optional per member
 
 ## Scope guardrail
 
@@ -105,7 +104,7 @@ sharing is available as an optional Supabase link service; see `docs/ONLINE_SHAR
 - [-] Invoke Android sharing. Implementation is complete; device verification is pending.
 - [x] Save and reopen an editable project.
 
-**Verification (September 1, 2026):** 21 Flutter tests pass, including connected Explore/Run recap/Studio navigation, an app-scoped mock repository, a real 1080 x 1920 PNG decode, serialization/reopen coverage, editor operations, conditional recap data, export errors, and 360 x 640 layouts. Focused analysis is clean and the Edge/web build succeeds with browser PNG download. Android build and share-sheet verification remain blocked on this host because Gradle cannot establish its required local loopback connection and no Android target is connected.
+**Verification (September 1, 2026):** 21 Flutter tests pass, including the fixture-driven Story Studio demo, an app-scoped mock repository, a real 1080 x 1920 PNG decode, serialization/reopen coverage, editor operations, conditional recap data, export errors, and 360 x 640 layouts. Focused analysis is clean and the standalone Story Studio entry point supports browser PNG download. The production `lib/main.dart` entry point is Android-only because its SQLite startup path has no web or Windows adapter.
 
 **Done when:** the editor works from fixtures, export dimensions are exact, projects reopen without losing transforms/order/text, and all visual assets are original or properly licensed.
 
@@ -135,15 +134,16 @@ sharing is available as an optional Supabase link service; see `docs/ONLINE_SHAR
   upload keystore, the release APK passes APK Signature Scheme v2 verification,
   and it installs and launches on a clean Android emulator.
 
-**Verification (September 3, 2026):** Module D now covers History empty,
+**Verification (September 5, 2026):** Module D now covers History empty,
 populated, retry/error, delete-confirmation, related-story cascade, retained
 photo cleanup, missing-media fallback, achievement boundaries, and active-run
 resume/discard recovery. File-backed SQLite tests also verify database restart
 and deletion isolation for runs, GPS points, evidence, stories, and
-achievements. All 53 project tests pass, `flutter analyze` reports no issues,
-and formatting is clean. A privately signed release APK passes v2 signature
-verification, installs and launches on a clean API 24+ emulator, and the
-offline run-to-history/story flow survives an app restart in airplane mode.
+achievements. All 62 project tests pass, `flutter analyze` reports no issues,
+and the current release APK passes v2 signature, package, API 24, and ABI
+verification. A debug web build compiles. Android APK installation and
+airplane-mode persistence were verified previously; no Android target was
+connected during the 5 September automated recheck.
 
 **Done when:** data survives restart, temporary image paths are not retained, deletion cannot damage unrelated records, real repositories replace fakes without feature rewrites, and the APK installs on API 24+.
 
@@ -169,19 +169,6 @@ No member waits for storage, GPS, backend, or another screen: use fakes until in
 - [x] Loading, success, empty, offline, and error feedback are visible.
 - [x] A small API 24+ device layout is usable.
 - [x] Airplane-mode flow passes from launch to exported story.
-
-## Code-Graph-RAG
-
-- [ ] Install `uv` only on machines opting into the tool.
-- [ ] Install Code-Graph-RAG outside the Flutter source tree.
-- [ ] Start its Memgraph/Qdrant services with Docker.
-- [ ] Index this repository without committing generated data.
-- [ ] Configure MCP with `TARGET_REPO_PATH` set to the local checkout.
-- [ ] Keep provider keys in private environment/client configuration.
-- [ ] Verify Dart structural queries after the feature skeleton exists.
-- [ ] Document the selected provider without exposing secrets.
-
-Code-Graph-RAG must never block development with `AGENTS.md`, source search, fixtures, and tests.
 
 ## September 4 integration target
 

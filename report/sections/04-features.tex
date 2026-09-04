@@ -1,0 +1,73 @@
+\section{Feature implementation}
+
+\subsection{Destinations and quests}
+Two versioned launch packs ship in application assets: Nha Trang and Ho Chi Minh
+City. Each pack contains city metadata, route plans, public landmarks, photo
+quests, fallback instructions, points of interest, and review metadata. The
+repository validates identifiers and relationships while decoding the JSON, so a
+malformed pack becomes an understandable loading failure rather than corrupting
+a run.
+
+Quest eligibility is evaluated from the latest accepted location and the quest's
+radius. When GPS is unavailable or unreliable, the content-defined fallback may
+allow the user to confirm physical presence explicitly. A required caption is
+validated before evidence is committed. This balances location awareness with
+the practical limits of urban GPS and device testing.
+
+\appscreenshot{images/route-details.png}{105mm}{Route details present metrics, safety notes, landmarks, and photo quests before tracking begins.}
+
+\subsection{Run lifecycle and location processing}
+The session lifecycle is represented explicitly as idle, active, paused, and
+finished states. Only active intervals contribute to duration. Pausing closes the
+current segment, while resuming opens a new segment. Finish derives a summary and
+clears the active checkpoint only after the final data has been saved.
+
+Consecutive accepted points use the Haversine formula:
+\[
+a=\sin^2(\Delta\varphi/2)+\cos(\varphi_1)\cos(\varphi_2)
+  \sin^2(\Delta\lambda/2),\qquad
+d=2R\arctan2(\sqrt a,\sqrt{1-a}).
+\]
+Implausible jumps are rejected using distance, elapsed time, and calculated
+speed. Non-increasing timestamps are invalid. Pace is unavailable for zero
+distance rather than represented by an infinite or misleading number. Calories
+are clearly presented as an estimate.
+
+The Android location adapter requests high accuracy, applies a five-meter
+distance filter, and configures a foreground notification for an ongoing run.
+The manifest declares fine/coarse location and the location foreground-service
+type. Tracking still begins only after a user-visible action.
+
+\appscreenshot{images/tracker.png}{108mm}{The active tracker keeps lifecycle controls, live metrics, and quest actions visible.}
+
+\subsection{Camera evidence and retained media}
+Camera capture paths are temporary. After a valid capture and caption, the photo
+store copies the image into application-controlled support storage and the
+evidence record refers to that retained path. Cancellation, permission failure,
+and plugin errors return to a usable screen. History deletion removes dependent
+story documents before the run record and cleans retained evidence only after
+repository records are consistent.
+
+\subsection{History and achievements}
+Journey combines completed runs, editable story projects, and personal
+achievements. Empty, loading, populated, and failure states are explicit. Run
+cards reopen summaries; story cards reopen their source project; destructive
+deletion requires confirmation. Achievement criteria are deterministic and
+personal, avoiding a public leaderboard or account requirement.
+
+\appscreenshot{images/history.png}{105mm}{Journey preserves completed runs, editable story projects, and personal achievements.}
+
+\subsection{Story Studio and export}
+Story Studio stores an ordered document with a fixed 1080 by 1920 canvas. Original
+templates provide starting compositions but remain ordinary editable documents.
+Elements carry their own type, content, style, layer order, and transform.
+Selection, move, scale, rotate, duplicate, delete, bring-forward, send-backward,
+undo, and redo operations produce new immutable documents.
+
+Export renders from the saved document model rather than taking a screenshot of
+the editor. Selection borders, handles, and guides are not part of the rendered
+canvas. The output dimensions are checked before the PNG is offered to the
+Android share sheet. A failed renderer or share service produces recoverable
+feedback and does not destroy the project.
+
+\appscreenshot{images/story-studio.png}{110mm}{Story Studio turns run evidence into a layered, editable portrait composition.}

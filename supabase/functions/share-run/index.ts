@@ -117,7 +117,9 @@ Deno.serve(async (request) => {
       .single();
 
     if (error) return json({ error: 'Could not create share link' }, 500);
-    const shareUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/share-run?shareId=${data.id}&token=${token}`;
+    const requestUrl = new URL(request.url);
+    requestUrl.search = '';
+    const shareUrl = `${requestUrl.toString()}?shareId=${data.id}&token=${token}`;
     return json({ shareId: data.id, token, expiresAtUtc: data.expires_at, shareUrl });
   }
 

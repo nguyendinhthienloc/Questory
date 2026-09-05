@@ -29,6 +29,7 @@ doc/api/
 .DS_Store
 .idea/caches/
 .idea/deviceManager.xml
+.idea/libraries/
 .idea/markdown.xml
 .idea/vcs.xml
 

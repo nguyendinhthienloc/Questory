@@ -1,5 +1,6 @@
 param(
-    [string]$VideoUrl = ''
+    [string]$VideoUrl = '',
+    [switch]$AllowMissingVideo
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,11 +21,16 @@ if ([string]::IsNullOrWhiteSpace($VideoUrl)) {
     $VideoUrl = (Get-Content -LiteralPath $videoFile -TotalCount 1).Trim()
 }
 
-if ($VideoUrl -notmatch '^https://') {
-    throw 'Add the public HTTPS video URL to video/demo-link.txt first.'
-}
-if ($VideoUrl -match 'PLACEHOLDER|example\.(com|invalid)|TBD') {
-    throw 'Replace the placeholder with the real public-view video URL.'
+$missingVideo = [string]::IsNullOrWhiteSpace($VideoUrl) -or
+    $VideoUrl -match 'PLACEHOLDER|example\.(com|invalid)|TBD'
+if ($missingVideo) {
+    if (-not $AllowMissingVideo) {
+        throw 'Add the public HTTPS video URL first, or use -AllowMissingVideo to stage an incomplete package.'
+    }
+    $VideoUrl = 'DEMO_VIDEO_LINK_PLACEHOLDER'
+    Write-Warning 'Video link is pending. This package is not ready for submission.'
+} elseif ($VideoUrl -notmatch '^https://') {
+    throw 'The demo video must use a public HTTPS URL.'
 }
 
 $apkSource = Join-Path $repositoryRoot 'apk\app-release.apk'
@@ -57,7 +63,8 @@ if ($LASTEXITCODE -ne 0) {
 
 $excludedPrefixes = @(
     '.idea/', '.dart_tool/', '.gradle-tmp/', 'build/', 'coverage/',
-    'node_modules/', 'submission/', 'tmp/', 'apk/', 'report/', 'video/'
+    'node_modules/', 'submission/', 'tmp/', 'apk/', 'report/', 'video/',
+    'output/', '.idea/', '.gradle/', 'gradle/'
 )
 foreach ($relativePath in $sourceFiles) {
     $normalizedPath = $relativePath.Replace('\', '/')
@@ -66,6 +73,7 @@ foreach ($relativePath in $sourceFiles) {
     }) {
         continue
     }
+    if ($normalizedPath -match '(^|/)(build|node_modules|\.idea|\.gradle|\.dart_tool)/') { continue }
     if ($normalizedPath -match '(^|/)key\.properties$|(^|/)local\.properties$|\.jks$|\.keystore$|(^|/)\.env') {
         continue
     }
@@ -96,22 +104,27 @@ foreach ($relativePath in @(
     }
 }
 
-$gitSource = Join-Path $repositoryRoot '.git'
-$gitDestination = Join-Path $sourceRoot '.git'
-& robocopy $gitSource $gitDestination /E /R:1 /W:1 /NFL /NDL /NJH /NJS /NP |
-    Out-Null
-if ($LASTEXITCODE -gt 7) {
-    throw "Git history staging failed with robocopy exit code $LASTEXITCODE."
-}
+# The requirements allow a Git log export instead of copying .git.
+$history = & git -C $repositoryRoot log --all --date=iso-strict --format=fuller --stat
+if ($LASTEXITCODE -ne 0) { throw 'Could not export Git history.' }
+[System.IO.File]::WriteAllLines(
+    (Join-Path $sourceRoot 'git-log.txt'),
+    $history,
+    [System.Text.UTF8Encoding]::new($false)
+)
 
 $packagedReadme = Join-Path $packageRoot 'README.md'
-Copy-Item -LiteralPath (Join-Path $repositoryRoot 'README.md') `
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'submission-readme.md') `
     -Destination $packagedReadme
 $readmeText = Get-Content -LiteralPath $packagedReadme -Raw
 if (-not $readmeText.Contains('DEMO_VIDEO_LINK_PLACEHOLDER')) {
     throw 'README.md does not contain the expected video-link placeholder.'
 }
 $readmeText = $readmeText.Replace('DEMO_VIDEO_LINK_PLACEHOLDER', $VideoUrl)
+if (-not $missingVideo) {
+    $readmeText = $readmeText.Replace('Replace the placeholder with a Google Drive or YouTube link viewable by anyone with the link. The video must be 5-10 minutes, with all four members speaking. The package is not ready to submit until this is filled in.', 'The demo must be viewable by anyone with the link.')
+    $readmeText = $readmeText.Replace('demo URL, pending completion.', 'demo URL.')
+}
 [System.IO.File]::WriteAllText(
     $packagedReadme,
     $readmeText,

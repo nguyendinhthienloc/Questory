@@ -39,15 +39,44 @@ void main() {
         findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('opens Tracks lazily between Explore and Journey', (
+    tester,
+  ) async {
+    var tracksBuilds = 0;
+    await _pumpNavigation(
+      tester,
+      FakeRunRepository(),
+      tracksScreenBuilder: (_) {
+        tracksBuilds++;
+        return const ColoredBox(
+          key: ValueKey('tracks-screen'),
+          color: Colors.black,
+        );
+      },
+    );
+
+    expect(find.text('Explore'), findsOneWidget);
+    expect(find.text('Tracks'), findsOneWidget);
+    expect(find.text('Journey'), findsOneWidget);
+    expect(tracksBuilds, 0);
+
+    await tester.tap(find.byKey(const ValueKey('nav-tracks')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('tracks-screen')), findsOneWidget);
+    expect(tracksBuilds, 1);
+  });
 }
 
 Future<void> _pumpNavigation(
   WidgetTester tester,
-  FakeRunRepository runs,
-) async {
+  FakeRunRepository runs, {
+  WidgetBuilder? tracksScreenBuilder,
+}) async {
   await tester.pumpWidget(
     MaterialApp(
       home: MainNavigation(
+        tracksScreenBuilder: tracksScreenBuilder,
         dependencies: AppDependencies(
           destinations: FakeDestinationRepository(seed: [_pack()]),
           runs: runs,

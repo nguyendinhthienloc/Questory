@@ -10,12 +10,19 @@ import '../features/history/application/achievement_checker.dart';
 import '../features/history/presentation/history_screen.dart';
 import '../features/tracking/presentation/run_summary_screen.dart';
 import '../features/tracking/presentation/run_tracker_screen.dart';
+import '../screens/home.dart';
 import 'app_dependencies.dart';
+import 'questory_theme.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key, required this.dependencies});
+  const MainNavigation({
+    super.key,
+    required this.dependencies,
+    this.tracksScreenBuilder,
+  });
 
   final AppDependencies dependencies;
+  final WidgetBuilder? tracksScreenBuilder;
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
@@ -25,6 +32,7 @@ class _MainNavigationState extends State<MainNavigation> {
   var _selectedIndex = 0;
   var _historyRevision = 0;
   var _recoveryChecked = false;
+  var _tracksHasOpened = false;
 
   @override
   void initState() {
@@ -208,38 +216,169 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final screen = _selectedIndex == 0
-        ? ExploreScreen(
-            repository: widget.dependencies.destinations,
-            onStartRoute: _openRoute,
-            onStartFreeRun: _openFreeRun,
-          )
-        : HistoryScreen(
-            key: ValueKey('history-$_historyRevision'),
-            dependencies: widget.dependencies,
-          );
+    final screens = [
+      ExploreScreen(
+        repository: widget.dependencies.destinations,
+        onStartRoute: _openRoute,
+        onStartFreeRun: _openFreeRun,
+      ),
+      if (_tracksHasOpened)
+        (widget.tracksScreenBuilder?.call(context) ?? const HomeScreen())
+      else
+        const SizedBox.shrink(),
+      HistoryScreen(
+        key: ValueKey('history-$_historyRevision'),
+        dependencies: widget.dependencies,
+      ),
+    ];
     return Scaffold(
-      body: screen,
-      bottomNavigationBar: NavigationBar(
+      body: IndexedStack(index: _selectedIndex, children: screens),
+      bottomNavigationBar: _MainBottomBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) {
+        onSelected: (index) {
           setState(() {
             _selectedIndex = index;
-            if (index == 1) _historyRevision++;
+            if (index == 1) _tracksHasOpened = true;
+            if (index == 2) _historyRevision++;
           });
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.explore_outlined),
-            selectedIcon: Icon(Icons.explore_rounded),
-            label: 'Explore',
+      ),
+    );
+  }
+}
+
+class _MainBottomBar extends StatelessWidget {
+  const _MainBottomBar({required this.selectedIndex, required this.onSelected});
+
+  final int selectedIndex;
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: QuestoryColors.white,
+      elevation: 12,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 88,
+          child: Row(
+            children: [
+              Expanded(
+                child: _DestinationButton(
+                  key: const ValueKey('nav-explore'),
+                  label: 'Explore',
+                  icon: Icons.explore_outlined,
+                  selectedIcon: Icons.explore_rounded,
+                  selected: selectedIndex == 0,
+                  onTap: () => onSelected(0),
+                ),
+              ),
+              Expanded(
+                child: Semantics(
+                  button: true,
+                  selected: selectedIndex == 1,
+                  label: 'Open Tracks camera',
+                  child: InkWell(
+                    key: const ValueKey('nav-tracks'),
+                    onTap: () => onSelected(1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 180),
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: selectedIndex == 1
+                                ? QuestoryColors.coral
+                                : QuestoryColors.ink,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: QuestoryColors.yellow,
+                              width: 4,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            color: QuestoryColors.white,
+                            size: 30,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        const Text(
+                          'Tracks',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _DestinationButton(
+                  key: const ValueKey('nav-journey'),
+                  label: 'Journey',
+                  icon: Icons.auto_stories_outlined,
+                  selectedIcon: Icons.auto_stories_rounded,
+                  selected: selectedIndex == 2,
+                  onTap: () => onSelected(2),
+                ),
+              ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.auto_stories_outlined),
-            selectedIcon: Icon(Icons.auto_stories_rounded),
-            label: 'Journey',
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DestinationButton extends StatelessWidget {
+  const _DestinationButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.selectedIcon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData selectedIcon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              selected ? selectedIcon : icon,
+              color: selected ? QuestoryColors.cobalt : QuestoryColors.ink,
+              size: 27,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? QuestoryColors.cobalt : QuestoryColors.ink,
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

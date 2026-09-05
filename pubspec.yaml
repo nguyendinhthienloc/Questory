@@ -69,6 +69,10 @@ flutter:
     - assets/destinations/ho_chi_minh_city_pack_v1.json
     - assets/destinations/nha_trang_pack_v1.json
     - assets/destinations/artwork/
+    - images/i1.JPG
+    - images/i2.JPG
+    - images/i3.JPG
+    - images/i4.JPG
 
   fonts:
     - family: Noto Sans

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:questory/screens/friend_tracks.dart';
 import 'package:questory/screens/home.dart';
 import 'package:questory/screens/preview.dart';
 
@@ -29,7 +30,50 @@ void main() {
     expect(accepted, isNotNull);
     expect(accepted!.delivery, TrackDelivery.delivered);
     expect(accepted!.sharedWith, containsAll(['Minh', 'An', 'Linh', 'Mai']));
-    expect(find.text('1 CAPTURED'), findsOneWidget);
+    expect(find.byType(CapturedTrackPage), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('swipes through bundled friend Tracks and reacts', (
+    tester,
+  ) async {
+    await _pumpTracks(tester, onAccepted: (_) {});
+
+    expect(
+        find.byKey(const ValueKey('view-friend-tracks-hint')), findsOneWidget);
+    expect(find.text('SWIPE UP TO VIEW 4 TRACKS'), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(const ValueKey('tracks-page-view')),
+      const Offset(0, -700),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey('track-friend-post-minh-sunrise')),
+      findsOneWidget,
+    );
+    expect(
+        find.text('Sunrise miles before the city wakes up.'), findsOneWidget);
+    expect(
+        find.text('Tran Phu Beach, Nha Trang  •  12 min ago'), findsOneWidget);
+    expect(find.text('8'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('react-to-minh')));
+    await tester.pumpAndSettle();
+    expect(find.text('9'), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(const ValueKey('tracks-page-view')),
+      const Offset(0, -700),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('track-friend-post-an-nguyen-hue')),
+      findsOneWidget,
+    );
+    expect(find.text('Quick lace check, then one more city loop.'),
+        findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -49,7 +93,7 @@ void main() {
     expect(accepted!.caption, 'Offline coastal Track');
     expect(accepted!.delivery, TrackDelivery.queued);
     expect(accepted!.bytes, isNotEmpty);
-    expect(find.text('1 CAPTURED'), findsOneWidget);
+    expect(find.byType(CapturedTrackPage), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -129,6 +129,56 @@ void main() {
     expect(find.textContaining('encoder unavailable'), findsOneWidget);
   });
 
+  testWidgets('cancelling text edits keeps the editor stable', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: StoryStudioScreen(
+          repository: FakeStoryRepository(),
+          renderer: FakeStoryRenderer(),
+          shareService: FakeShareService(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    const titleKey = ValueKey('draft-city-sprint-title');
+    await tester.tap(find.byKey(titleKey));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('edit-story-text')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edit element text'), findsOneWidget);
+    final originalText = tester
+        .widget<TextField>(find.byKey(const ValueKey('story-text-field')))
+        .controller!
+        .text;
+    await tester.enterText(find.byType(TextField), 'This should be discarded');
+    await tester.tap(find.text('CANCEL'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.text('Edit element text'), findsNothing);
+    expect(find.text('This should be discarded'), findsNothing);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.byKey(const ValueKey('edit-story-text')));
+    await tester.pumpAndSettle();
+    final reopenedField = tester.widget<TextField>(
+      find.byKey(const ValueKey('story-text-field')),
+    );
+    expect(reopenedField.controller!.text, originalText);
+    await tester.tap(find.byKey(const ValueKey('cancel-story-text')));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.byKey(const ValueKey('story-rotate-left')));
+    await tester.pump();
+    expect(find.byKey(titleKey), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('remains usable on a small Android-sized screen', (
     tester,
   ) async {

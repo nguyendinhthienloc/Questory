@@ -8,7 +8,7 @@ Submission Form: https://forms.gle/KdcR2BaASEGx2RCeA
 1. PROJECT OVERVIEW & APPLICATION REQUIREMENTS
 --------------------------------------------------------------------------------
 - Platform & Tech Stack:
-  * Must be a native-installable Android app.
+      * Must be a native-installable Android app.
   * Minimum supported version: Android API 24+.
   * Permitted stacks: Kotlin/Java with Android SDK, Jetpack Compose, Flutter, or React Native.
 - Scope & Functionality:

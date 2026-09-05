@@ -2,8 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'friend_tracks.dart';
 import 'friends.dart';
-import 'history.dart';
 import 'preview.dart';
 
 typedef CameraDescriptionLoader = Future<List<CameraDescription>> Function();
@@ -28,10 +28,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   CameraController? _controller;
+  final PageController _trackPageController = PageController();
   List<CameraDescription> _cameras = const [];
   final List<CapturedQuestPhoto> _captures = [];
   final List<TrackFriend> _friends = List.of(starterTrackFriends);
+  final Set<String> _likedTrackIds = {};
   var _cameraIndex = 0;
+  var _trackPage = 0;
   var _loading = true;
   var _capturing = false;
   var _flashEnabled = false;
@@ -50,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _controller?.dispose();
+    _trackPageController.dispose();
     super.dispose();
   }
 
@@ -217,6 +221,15 @@ class _HomeScreenState extends State<HomeScreen> {
         'Mock delivery sent to ${photo.sharedWith.join(', ')}.',
     };
     _showMessage(message);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_trackPageController.hasClients) {
+        _trackPageController.animateToPage(
+          1,
+          duration: const Duration(milliseconds: 420),
+          curve: Curves.easeOutCubic,
+        );
+      }
+    });
   }
 
   Future<void> _openAddFriend() async {
@@ -286,59 +299,242 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final captureCount = _captures.length;
+    final trackCount = captureCount + starterFriendTracks.length;
+    final pageCount = trackCount + 1;
     return Scaffold(
       backgroundColor: const Color(0xFF1D1B20),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(18, 18, 18, 30),
+        child: Stack(
           children: [
-            _CameraHeader(friendCount: _friends.length),
-            const SizedBox(height: 12),
-            _FriendCircle(
-              friends: _friends,
-              mockOnline: _mockOnline,
-              onOnlineChanged: (value) => setState(() => _mockOnline = value),
-              onAddFriend: _openAddFriend,
-            ),
-            const SizedBox(height: 18),
-            _CameraSurface(
-              controller: _cameraReady ? _controller : null,
-              loading: _loading,
-              message: _cameraMessage,
-              captureCount: _captures.length,
-            ),
-            const SizedBox(height: 18),
-            _CameraControls(
-              cameraReady: _cameraReady,
-              capturing: _capturing,
-              flashEnabled: _flashEnabled,
-              canFlip: _cameras.length > 1,
-              onFlash: _toggleFlash,
-              onCapture: _capture,
-              onFlip: _flipCamera,
-            ),
-            if (!_cameraReady) ...[
-              const SizedBox(height: 14),
-              OutlinedButton.icon(
-                key: const ValueKey('use-demo-photo'),
-                onPressed: _capturing ? null : _useDemoPhoto,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Color(0xFFFFD447), width: 2),
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                icon: const Icon(Icons.auto_awesome),
-                label: const Text('USE DEMO PHOTO'),
-              ),
-            ],
-            const SizedBox(height: 24),
-            LocketCaptureHistory(
-              captures: _captures,
-              onRemove: (index) {
-                setState(() => _captures.removeAt(index));
+            PageView.builder(
+              key: const ValueKey('tracks-page-view'),
+              controller: _trackPageController,
+              scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(),
+              itemCount: pageCount,
+              onPageChanged: (page) => setState(() => _trackPage = page),
+              itemBuilder: (context, page) {
+                if (page == 0) {
+                  return _CameraPage(
+                    friends: _friends,
+                    mockOnline: _mockOnline,
+                    onOnlineChanged: (value) =>
+                        setState(() => _mockOnline = value),
+                    onAddFriend: _openAddFriend,
+                    controller: _cameraReady ? _controller : null,
+                    loading: _loading,
+                    message: _cameraMessage,
+                    captureCount: captureCount,
+                    cameraReady: _cameraReady,
+                    capturing: _capturing,
+                    flashEnabled: _flashEnabled,
+                    canFlip: _cameras.length > 1,
+                    onFlash: _toggleFlash,
+                    onCapture: _capture,
+                    onFlip: _flipCamera,
+                    onUseDemoPhoto: _useDemoPhoto,
+                    trackCount: trackCount,
+                  );
+                }
+
+                final captureIndex = page - 1;
+                if (captureIndex < captureCount) {
+                  return CapturedTrackPage(
+                    capture: _captures[captureIndex],
+                    positionLabel: '$page / $trackCount',
+                    onDelete: () {
+                      setState(() => _captures.removeAt(captureIndex));
+                    },
+                  );
+                }
+
+                final friendTrack =
+                    starterFriendTracks[captureIndex - captureCount];
+                return FriendTrackPage(
+                  post: friendTrack,
+                  liked: _likedTrackIds.contains(friendTrack.id),
+                  positionLabel: '$page / $trackCount',
+                  onToggleLike: () {
+                    setState(() {
+                      if (!_likedTrackIds.add(friendTrack.id)) {
+                        _likedTrackIds.remove(friendTrack.id);
+                      }
+                    });
+                  },
+                );
               },
             ),
+            _TrackPageRail(
+              currentPage: _trackPage,
+              pageCount: pageCount,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CameraPage extends StatelessWidget {
+  const _CameraPage({
+    required this.friends,
+    required this.mockOnline,
+    required this.onOnlineChanged,
+    required this.onAddFriend,
+    required this.controller,
+    required this.loading,
+    required this.message,
+    required this.captureCount,
+    required this.cameraReady,
+    required this.capturing,
+    required this.flashEnabled,
+    required this.canFlip,
+    required this.onFlash,
+    required this.onCapture,
+    required this.onFlip,
+    required this.onUseDemoPhoto,
+    required this.trackCount,
+  });
+
+  final List<TrackFriend> friends;
+  final bool mockOnline;
+  final ValueChanged<bool> onOnlineChanged;
+  final VoidCallback onAddFriend;
+  final CameraController? controller;
+  final bool loading;
+  final String? message;
+  final int captureCount;
+  final bool cameraReady;
+  final bool capturing;
+  final bool flashEnabled;
+  final bool canFlip;
+  final VoidCallback onFlash;
+  final VoidCallback onCapture;
+  final VoidCallback onFlip;
+  final VoidCallback onUseDemoPhoto;
+  final int trackCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 14, 24, 10),
+      child: Column(
+        children: [
+          _CameraHeader(friendCount: friends.length),
+          const SizedBox(height: 8),
+          _FriendCircle(
+            friends: friends,
+            mockOnline: mockOnline,
+            onOnlineChanged: onOnlineChanged,
+            onAddFriend: onAddFriend,
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Center(
+              child: _CameraSurface(
+                controller: controller,
+                loading: loading,
+                message: message,
+                captureCount: captureCount,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          _CameraControls(
+            cameraReady: cameraReady,
+            capturing: capturing,
+            flashEnabled: flashEnabled,
+            canFlip: canFlip,
+            onFlash: onFlash,
+            onCapture: onCapture,
+            onFlip: onFlip,
+          ),
+          if (!cameraReady) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              key: const ValueKey('use-demo-photo'),
+              onPressed: capturing ? null : onUseDemoPhoto,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Color(0xFFFFD447), width: 2),
+                minimumSize: const Size.fromHeight(44),
+              ),
+              icon: const Icon(Icons.auto_awesome),
+              label: const Text('USE DEMO PHOTO'),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Row(
+            key: const ValueKey('view-friend-tracks-hint'),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.keyboard_arrow_up_rounded,
+                color: Color(0xFFFFD447),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'SWIPE UP TO VIEW $trackCount TRACKS',
+                style: const TextStyle(
+                  color: Color(0xFFBBB6C2),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.7,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrackPageRail extends StatelessWidget {
+  const _TrackPageRail({
+    required this.currentPage,
+    required this.pageCount,
+  });
+
+  final int currentPage;
+  final int pageCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: 6,
+      top: 0,
+      bottom: 0,
+      child: IgnorePointer(
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0x991D1B20),
+              borderRadius: BorderRadius.circular(99),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var page = 0; page < pageCount; page++) ...[
+                  AnimatedContainer(
+                    key: ValueKey('track-page-dot-$page'),
+                    duration: const Duration(milliseconds: 180),
+                    width: currentPage == page ? 8 : 6,
+                    height: currentPage == page ? 18 : 6,
+                    decoration: BoxDecoration(
+                      color: currentPage == page
+                          ? const Color(0xFFFFD447)
+                          : const Color(0xFF8C8791),
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                  ),
+                  if (page != pageCount - 1) const SizedBox(height: 5),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );

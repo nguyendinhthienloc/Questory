@@ -200,33 +200,14 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
     if (element == null) {
       return;
     }
-    final textController = TextEditingController(text: element.content);
     final result = await showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit element text'),
-        content: TextField(
-          controller: textController,
-          autofocus: true,
-          maxLines: 4,
-          decoration: const InputDecoration(labelText: 'Story text'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, textController.text),
-            child: const Text('APPLY'),
-          ),
-        ],
-      ),
+      builder: (_) => _EditTextDialog(initialText: element.content),
     );
-    textController.dispose();
-    if (result != null) {
-      _editor.updateSelectedContent(result);
+    if (!mounted || result == null) {
+      return;
     }
+    _editor.updateSelectedContent(result);
   }
 
   @override
@@ -308,6 +289,57 @@ class _StoryStudioScreenState extends State<StoryStudioScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _EditTextDialog extends StatefulWidget {
+  const _EditTextDialog({required this.initialText});
+
+  final String initialText;
+
+  @override
+  State<_EditTextDialog> createState() => _EditTextDialogState();
+}
+
+class _EditTextDialogState extends State<_EditTextDialog> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialText);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Edit element text'),
+      content: TextField(
+        key: const ValueKey('story-text-field'),
+        controller: _controller,
+        autofocus: true,
+        maxLines: 4,
+        decoration: const InputDecoration(labelText: 'Story text'),
+      ),
+      actions: [
+        TextButton(
+          key: const ValueKey('cancel-story-text'),
+          onPressed: () => Navigator.pop(context),
+          child: const Text('CANCEL'),
+        ),
+        FilledButton(
+          key: const ValueKey('apply-story-text'),
+          onPressed: () => Navigator.pop(context, _controller.text),
+          child: const Text('APPLY'),
+        ),
+      ],
     );
   }
 }

@@ -3,9 +3,9 @@
     "short_name": "Questory",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F1E3",
+    "theme_color": "#0B7A75",
+    "description": "Run the city, complete photo quests, and capture the story.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

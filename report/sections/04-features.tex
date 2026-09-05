@@ -40,13 +40,25 @@ type. Tracking still begins only after a user-visible action.
 
 \appscreenshot{images/tracker.png}{108mm}{The active tracker keeps lifecycle controls, live metrics, and quest actions visible.}
 
-\subsection{Camera evidence and retained media}
+\subsection{Camera evidence, Tracks, and retained media}
 Camera capture paths are temporary. After a valid capture and caption, the photo
 store copies the image into application-controlled support storage and the
 evidence record refers to that retained path. Cancellation, permission failure,
 and plugin errors return to a usable screen. History deletion removes dependent
 story documents before the run record and cleans retained evidence only after
 repository records are consistent.
+
+The standalone Tracks experience adapts the camera interaction inherited from
+Nasr Al-Rahbi's MIT-licensed Flutter project \emph{Lockit: Locket Clone App},
+which provided the original capture, flash, camera-switching, preview, and local
+photo-history baseline. Questory retains the upstream copyright notice in
+\code{LICENSE} and lists the canonical repository in the References section.
+The team reworked that baseline for the production navigation: the camera is
+opened lazily from the central Tracks action, hardware and permission failures
+fall back safely, bundled photos support offline testing, captions and friend
+audiences are reviewed before acceptance, and mock accounts expose delivered
+versus locally queued sharing states. Accepted Tracks remain part of Questory's
+journey-and-story workflow rather than operating as a disconnected clone.
 
 \subsection{History and achievements}
 Journey combines completed runs, editable story projects, and personal
